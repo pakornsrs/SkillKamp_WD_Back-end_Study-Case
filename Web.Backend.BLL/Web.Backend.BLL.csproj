@@ -7,11 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="IServices\" />
     <Folder Include="UtilityMethods\" />
     <Folder Include="Validators\" />
     <Folder Include="ObjectMappers\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>
