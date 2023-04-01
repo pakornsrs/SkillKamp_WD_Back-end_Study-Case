@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="IServices\" />
+    <Folder Include="UtilityMethods\" />
+    <Folder Include="Validators\" />
+    <Folder Include="ObjectMappers\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Web.Backend.DAL\Web.Backend.DAL.csproj" />
+    <ProjectReference Include="..\Web.Backend.DTO\Web.Backend.DTO.csproj" />
+    <ProjectReference Include="..\Web.Backend.External.PlugIn\Web.Backend.External.PlugIn.csproj" />
+    <ProjectReference Include="..\Web.Backend.Internal.PlugIn\Web.Backend.Internal.PlugIn.csproj" />
+  </ItemGroup>
+
+</Project>
