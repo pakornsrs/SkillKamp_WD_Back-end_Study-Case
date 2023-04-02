@@ -6,8 +6,6 @@ using Web.Backend.DTO.Config;
 
 namespace Web.Backend.Controllers
 {
-    [ApiController]
-    [Route("api/config")]
     public class SystemConfigController : Controller
     {
         private readonly ISystemConfigService systemConfigService;
@@ -17,7 +15,7 @@ namespace Web.Backend.Controllers
         }
 
         [HttpGet()]
-        [Route("/api-version")]
+        [Route("api/config/api-version")]
         public async Task<IActionResult> GetServiceVersion()
         {
             var result = new ServiceResponseModel<GetServiceVersionDTO>();

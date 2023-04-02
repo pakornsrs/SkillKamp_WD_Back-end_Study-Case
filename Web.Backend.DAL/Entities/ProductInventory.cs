@@ -17,5 +17,5 @@ public partial class ProductInventory
 
     public string? UpdateBy { get; set; }
 
-    public virtual ICollection<Product> Products { get; } = new List<Product>();
+    public virtual ICollection<ProductDetail> ProductDetails { get; } = new List<ProductDetail>();
 }

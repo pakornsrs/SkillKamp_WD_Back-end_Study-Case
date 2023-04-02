@@ -17,6 +17,13 @@ builder.Services.AddDbContext<SkillkampWdStudyCaseDbContext>(x => x.UseSqlServer
 
 # region Service
 builder.Services.AddScoped<ISystemConfigService, SystemConfigService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IInventoryService, InventoryService>();
+builder.Services.AddScoped<IProductDetailService, ProductDetailService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductColorService, ProductColorService>();
+builder.Services.AddScoped<IProductSizeService, ProductSizeService>();
 # endregion
 
 var app = builder.Build();

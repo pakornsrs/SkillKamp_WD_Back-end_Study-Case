@@ -15,10 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Web.Backend.BLL\Web.Backend.BLL.csproj" />
     <ProjectReference Include="..\Web.Backend.DAL\Web.Backend.DAL.csproj" />
     <ProjectReference Include="..\Web.Backend.DTO\Web.Backend.DTO.csproj" />

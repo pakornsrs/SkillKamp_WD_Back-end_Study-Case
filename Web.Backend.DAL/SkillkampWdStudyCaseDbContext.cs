@@ -36,6 +36,8 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
     public virtual DbSet<ProductColor> ProductColors { get; set; }
 
+    public virtual DbSet<ProductDetail> ProductDetails { get; set; }
+
     public virtual DbSet<ProductInventory> ProductInventories { get; set; }
 
     public virtual DbSet<ProductReview> ProductReviews { get; set; }
@@ -62,9 +64,11 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.UseCollation("Thai_CI_AS");
+
         modelBuilder.Entity<ActivityLog>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ACTIVITY__3214EC07E30BB681");
+            entity.HasKey(e => e.Id).HasName("PK__ACTIVITY__3214EC07A9D6ED9A");
 
             entity.ToTable("ACTIVITY_LOG");
 
@@ -77,7 +81,7 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
         modelBuilder.Entity<CartItem>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__CART_ITE__3214EC07C4AD8D13");
+            entity.HasKey(e => e.Id).HasName("PK__CART_ITE__3214EC07ECECCE75");
 
             entity.ToTable("CART_ITEM");
 
@@ -98,7 +102,7 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
         modelBuilder.Entity<DiscountCampeign>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__DISCOUNT__3214EC078C1554B8");
+            entity.HasKey(e => e.Id).HasName("PK__DISCOUNT__3214EC079076CCF8");
 
             entity.ToTable("DISCOUNT_CAMPEIGN");
 
@@ -120,7 +124,7 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
         modelBuilder.Entity<DiscountCoupon>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__DISCOUNT__3214EC07D944350B");
+            entity.HasKey(e => e.Id).HasName("PK__DISCOUNT__3214EC070CB077BD");
 
             entity.ToTable("DISCOUNT_COUPON");
 
@@ -138,7 +142,7 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
         modelBuilder.Entity<InvoiceDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__INVOICE___3214EC079FA19287");
+            entity.HasKey(e => e.Id).HasName("PK__INVOICE___3214EC0707DC4FD1");
 
             entity.ToTable("INVOICE_DETAIL");
 
@@ -151,7 +155,7 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ORDER__3214EC07E2156CF5");
+            entity.HasKey(e => e.Id).HasName("PK__ORDER__3214EC074267D131");
 
             entity.ToTable("ORDER");
 
@@ -169,7 +173,7 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
         modelBuilder.Entity<PaymentDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__PAYMENT___3214EC0769DF1B6D");
+            entity.HasKey(e => e.Id).HasName("PK__PAYMENT___3214EC07E34482CE");
 
             entity.ToTable("PAYMENT_DETAIL");
 
@@ -186,12 +190,10 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__PRODUCT__3214EC07E58E8F5D");
+            entity.HasKey(e => e.Id).HasName("PK__PRODUCT__3214EC075EA19960");
 
             entity.ToTable("PRODUCT");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.ColorIdList).HasMaxLength(50);
             entity.Property(e => e.CreateBy).HasMaxLength(50);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.DescEn).HasMaxLength(255);
@@ -199,38 +201,24 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
             entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.ProductNameEn).HasMaxLength(50);
             entity.Property(e => e.ProductNameTh).HasMaxLength(50);
-            entity.Property(e => e.SizeIdList).HasMaxLength(50);
             entity.Property(e => e.UpdateBy).HasMaxLength(50);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.Category).WithMany(p => p.Products)
                 .HasForeignKey(d => d.CategoryId)
-                .HasConstraintName("FK__PRODUCT__Categor__4CA06362");
-
-            entity.HasOne(d => d.Color).WithMany(p => p.Products)
-                .HasForeignKey(d => d.ColorId)
-                .HasConstraintName("FK__PRODUCT__ColorId__4E88ABD4");
+                .HasConstraintName("FK__PRODUCT__Categor__4E88ABD4");
 
             entity.HasOne(d => d.Discount).WithMany(p => p.Products)
                 .HasForeignKey(d => d.DiscountId)
-                .HasConstraintName("FK__PRODUCT__Discoun__4D94879B");
-
-            entity.HasOne(d => d.Inventory).WithMany(p => p.Products)
-                .HasForeignKey(d => d.InventoryId)
-                .HasConstraintName("FK__PRODUCT__Invento__5DCAEF64");
-
-            entity.HasOne(d => d.Size).WithMany(p => p.Products)
-                .HasForeignKey(d => d.SizeId)
-                .HasConstraintName("FK__PRODUCT__SizeId__4F7CD00D");
+                .HasConstraintName("FK__PRODUCT__Discoun__4F7CD00D");
         });
 
         modelBuilder.Entity<ProductCategory>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__PRODUCT___3214EC07FF1B4DFA");
+            entity.HasKey(e => e.Id).HasName("PK__PRODUCT___3214EC07742F0371");
 
             entity.ToTable("PRODUCT_CATEGORY");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreateBy).HasMaxLength(50);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.DescEn).HasMaxLength(255);
@@ -245,11 +233,10 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
         modelBuilder.Entity<ProductColor>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__PRODUCT___3214EC07AF3964D1");
+            entity.HasKey(e => e.Id).HasName("PK__PRODUCT___3214EC07DF27EA5B");
 
             entity.ToTable("PRODUCT_COLOR");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.ColorCode).HasMaxLength(20);
             entity.Property(e => e.ColorCodeRgb)
                 .HasMaxLength(20)
@@ -262,13 +249,41 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 
+        modelBuilder.Entity<ProductDetail>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__PRODUCT___3214EC07D42F7B6A");
+
+            entity.ToTable("PRODUCT_DETAIL");
+
+            entity.Property(e => e.CreateBy).HasMaxLength(50);
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.UpdateBy).HasMaxLength(50);
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Color).WithMany(p => p.ProductDetails)
+                .HasForeignKey(d => d.ColorId)
+                .HasConstraintName("FK__PRODUCT_D__Color__60A75C0F");
+
+            entity.HasOne(d => d.Inventory).WithMany(p => p.ProductDetails)
+                .HasForeignKey(d => d.InventoryId)
+                .HasConstraintName("FK__PRODUCT_D__Inven__628FA481");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.ProductDetails)
+                .HasForeignKey(d => d.ProductId)
+                .HasConstraintName("FK__PRODUCT_D__Produ__5FB337D6");
+
+            entity.HasOne(d => d.Size).WithMany(p => p.ProductDetails)
+                .HasForeignKey(d => d.SizeId)
+                .HasConstraintName("FK__PRODUCT_D__SizeI__619B8048");
+        });
+
         modelBuilder.Entity<ProductInventory>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__PRODUCT___3214EC0750DE25FF");
+            entity.HasKey(e => e.Id).HasName("PK__PRODUCT___3214EC077831E439");
 
             entity.ToTable("PRODUCT_INVENTORY");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreateBy).HasMaxLength(50);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.UpdateBy).HasMaxLength(50);
@@ -277,7 +292,7 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
         modelBuilder.Entity<ProductReview>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__PRODUCT___3214EC07DC1F60E7");
+            entity.HasKey(e => e.Id).HasName("PK__PRODUCT___3214EC07C989B80C");
 
             entity.ToTable("PRODUCT_REVIEW");
 
@@ -300,11 +315,10 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
         modelBuilder.Entity<ProductSize>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__PRODUCT___3214EC0766EDEA08");
+            entity.HasKey(e => e.Id).HasName("PK__PRODUCT___3214EC075D7B2EB0");
 
             entity.ToTable("PRODUCT_SIZE");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreateBy).HasMaxLength(50);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.SizeDescEn).HasMaxLength(20);
@@ -315,7 +329,7 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
         modelBuilder.Entity<PurchaseSession>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__PURCHASE__3214EC07161B4967");
+            entity.HasKey(e => e.Id).HasName("PK__PURCHASE__3214EC07324F21A0");
 
             entity.ToTable("PURCHASE_SESSION");
 
@@ -334,7 +348,7 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
         modelBuilder.Entity<PurchasedOrder>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__PURCHASE__3214EC0733EDD0C0");
+            entity.HasKey(e => e.Id).HasName("PK__PURCHASE__3214EC072F6F4724");
 
             entity.ToTable("PURCHASED_ORDER");
 
@@ -363,11 +377,10 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ROLE__3214EC0738D5E5FE");
+            entity.HasKey(e => e.Id).HasName("PK__ROLE__3214EC07E3F7FCF1");
 
             entity.ToTable("ROLE");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreateBy).HasMaxLength(50);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.RoleNameEn).HasMaxLength(20);
@@ -380,10 +393,11 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
         modelBuilder.Entity<SystemConfig>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__SYSTEM_C__3214EC07501021D9");
+            entity.HasKey(e => e.Id).HasName("PK__SYSTEM_C__3214EC073136E90E");
 
             entity.ToTable("SYSTEM_CONFIG");
 
+            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.ConfigDescEn).HasMaxLength(255);
             entity.Property(e => e.ConfigDescTh).HasMaxLength(255);
             entity.Property(e => e.ConfigName).HasMaxLength(100);
@@ -396,7 +410,7 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
         modelBuilder.Entity<TransactionLog>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TRANSACT__3214EC076DE647C3");
+            entity.HasKey(e => e.Id).HasName("PK__TRANSACT__3214EC07CC5BEEF2");
 
             entity.ToTable("TRANSACTION_LOG");
 
@@ -412,11 +426,10 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__USER__3214EC071C6D0B15");
+            entity.HasKey(e => e.Id).HasName("PK__USER__3214EC0761EB1029");
 
             entity.ToTable("USER");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.BirthDate).HasColumnType("datetime");
             entity.Property(e => e.CreateBy).HasMaxLength(50);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
@@ -433,20 +446,19 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)
-                .HasConstraintName("FK__USER__RoleId__5EBF139D");
+                .HasConstraintName("FK__USER__RoleId__5DCAEF64");
 
             entity.HasOne(d => d.UserToken).WithMany(p => p.Users)
                 .HasForeignKey(d => d.UserTokenId)
-                .HasConstraintName("FK__USER__UserTokenI__5FB337D6");
+                .HasConstraintName("FK__USER__UserTokenI__5EBF139D");
         });
 
         modelBuilder.Entity<UserAddress>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__USER_ADD__3214EC0746AC7225");
+            entity.HasKey(e => e.Id).HasName("PK__USER_ADD__3214EC0760795316");
 
             entity.ToTable("USER_ADDRESS");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.AddressLine1).HasMaxLength(255);
             entity.Property(e => e.AddressLine2).HasMaxLength(255);
             entity.Property(e => e.CreateBy).HasMaxLength(50);
@@ -465,11 +477,10 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
         modelBuilder.Entity<UserCard>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__USER_CAR__3214EC071D485EDB");
+            entity.HasKey(e => e.Id).HasName("PK__USER_CAR__3214EC0763B25E38");
 
             entity.ToTable("USER_CARD");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CardExpireDate).HasColumnType("datetime");
             entity.Property(e => e.CardNo).HasMaxLength(20);
             entity.Property(e => e.CreateBy).HasMaxLength(50);
@@ -485,7 +496,7 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
         modelBuilder.Entity<UserToken>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__USER_TOK__3214EC07043BD35B");
+            entity.HasKey(e => e.Id).HasName("PK__USER_TOK__3214EC0760176084");
 
             entity.ToTable("USER_TOKEN");
 
