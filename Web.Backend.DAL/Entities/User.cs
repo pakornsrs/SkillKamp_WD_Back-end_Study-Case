@@ -7,6 +7,8 @@ public partial class User
 {
     public int Id { get; set; }
 
+    public int? UserTokenId { get; set; }
+
     public string? Username { get; set; }
 
     public string? Password { get; set; }
@@ -27,7 +29,7 @@ public partial class User
 
     public string? Email { get; set; }
 
-    public int? Role { get; set; }
+    public int? RoleId { get; set; }
 
     public DateTime? CreateDate { get; set; }
 
@@ -43,7 +45,11 @@ public partial class User
 
     public virtual ICollection<PurchaseSession> PurchaseSessions { get; } = new List<PurchaseSession>();
 
+    public virtual Role? Role { get; set; }
+
     public virtual ICollection<UserAddress> UserAddresses { get; } = new List<UserAddress>();
 
     public virtual ICollection<UserCard> UserCards { get; } = new List<UserCard>();
+
+    public virtual UserToken? UserToken { get; set; }
 }
