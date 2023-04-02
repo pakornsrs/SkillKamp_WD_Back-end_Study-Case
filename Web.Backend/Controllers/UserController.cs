@@ -33,5 +33,24 @@ namespace Web.Backend.Controllers
 
             return StatusCode(200, result);
         }
+
+        [HttpPost()]
+        [Route("api/user/login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequestModel req)
+        {
+            var result = new ServiceResponseModel<LoginDTO>();
+
+            try
+            {
+                result = await userService.Login(req.Username, req.Password);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return StatusCode(200, result);
+        }
+
     }
 }

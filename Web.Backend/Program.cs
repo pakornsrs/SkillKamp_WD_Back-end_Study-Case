@@ -24,6 +24,7 @@ builder.Services.AddScoped<IProductDetailService, ProductDetailService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductColorService, ProductColorService>();
 builder.Services.AddScoped<IProductSizeService, ProductSizeService>();
+builder.Services.AddScoped<IUserTokenService, UserTokenService>();
 # endregion
 
 var app = builder.Build();

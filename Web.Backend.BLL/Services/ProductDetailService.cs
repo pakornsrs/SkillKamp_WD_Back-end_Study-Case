@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Web.Backend.BLL.IServices;
-using Web.Backend.BLL.ObjectMappers;
+using Web.Backend.BLL.ModelMappers;
 using Web.Backend.BLL.UtilityMethods;
 using Web.Backend.DAL;
 using Web.Backend.DAL.Entities;
@@ -17,7 +17,7 @@ namespace Web.Backend.BLL.Services
     public class ProductDetailService : IProductDetailService
     {
         private readonly SkillkampWdStudyCaseDbContext dbContext;
-        private IMapper mapper = new MapperConfiguration(cfg => cfg.AddProfile<ObjectMapper>()).CreateMapper();
+        private IMapper mapper = new MapperConfiguration(cfg => cfg.AddProfile<ModelMapper>()).CreateMapper();
 
         public ProductDetailService(SkillkampWdStudyCaseDbContext dbContext)
         {

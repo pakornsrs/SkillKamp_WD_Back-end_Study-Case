@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Web.Backend.BLL.IServices;
-using Web.Backend.BLL.ObjectMappers;
+using Web.Backend.BLL.ModelMappers;
 using Web.Backend.BLL.UtilityMethods;
 using Web.Backend.DAL;
 using Web.Backend.DAL.Entities;
@@ -15,6 +15,7 @@ using Web.Backend.DTO;
 using Web.Backend.DTO.Addresses;
 using Web.Backend.DTO.Cards;
 using Web.Backend.DTO.Users;
+using Web.Backend.DTO.UserTokens;
 
 namespace Web.Backend.BLL.Services
 {
@@ -22,19 +23,25 @@ namespace Web.Backend.BLL.Services
     {
 		private readonly SkillkampWdStudyCaseDbContext dbContext;
         private readonly IRoleService roleService;
+        private readonly IUserTokenService userTokenService;
+
+        private IMapper mapper = new MapperConfiguration(cfg => cfg.AddProfile<ModelMapper>()).CreateMapper();
 
         public UserService(SkillkampWdStudyCaseDbContext dbContext,
-                           IRoleService roleService)
+                           IRoleService roleService,
+                           IUserTokenService userTokenService)
 		{
 			this.dbContext = dbContext;
             this.roleService = roleService;
-		}
+            this.userTokenService = userTokenService;
+
+        }
+
+        #region public method
         public async Task<ServiceResponseModel<RegistrationDTO>> Registration(UserDTO userDetail, List<AddressDTO> addressList ,List<CardDTO> userCardList)
         {
             var response = new ServiceResponseModel<RegistrationDTO>();
             var tranDateTime = DateTimeUtility.GetDateTimeThai();
-            var config = new MapperConfiguration(cfg => cfg.AddProfile<ObjectMapper>());
-            var mapper = config.CreateMapper();
 
             using (IDbContextTransaction transaction = this.dbContext.Database.BeginTransaction())
             {
@@ -94,10 +101,23 @@ namespace Web.Backend.BLL.Services
                         dbContext.SaveChanges();
                     }
 
-                    transaction.Commit();
+                    // Generate Token and insert to table [User_Token]
+
+                    var userToken = userTokenService.CreateUserToken(user.Id, user.Username, "webuser");
+
+                    // Update data for tabel [User]
+
+                    user.UserTokenId = userToken.Id;
+                    dbContext.Set<User>().Update(user);
+                    dbContext.SaveChanges();
+
+                    response.Item = mapper.Map<RegistrationDTO>(user);
+                    response.Item.UserToken = userToken.Token;
 
                     response.ErrorCode = "0000";
                     response.ErrorMessage = "Success";
+
+                    transaction.Commit();
 
                 }
 				catch (Exception ex)
@@ -111,5 +131,66 @@ namespace Web.Backend.BLL.Services
 
             return response;
         }
+
+        public async Task<ServiceResponseModel<LoginDTO>> Login(string username, string password)
+        {
+            var response = new ServiceResponseModel<LoginDTO>();
+            var userDetail = new LoginDTO();
+            var tranDateTime = DateTimeUtility.GetDateTimeThai();
+
+            using (IDbContextTransaction transaction = this.dbContext.Database.BeginTransaction())
+            {
+                try
+                {
+                    // Get user login
+
+                    password = StringHashing.GetHashingString(password);
+
+                    var userQuery = (from q in this.dbContext.Users
+                                 where q.Username == username && q.Password == password
+                                 select q).FirstOrDefault();
+
+                    if(userQuery == null)
+                    {
+                        response.ErrorCode = "LO0001";
+                        response.ErrorMessage = "Username or password is incorrect.";
+
+                        return response;
+                    }
+
+                    // Update user token
+                    var token = userTokenService.UpdateUserToken(userQuery.UserTokenId.Value);
+
+                    if (token == null)
+                    {
+                        response.ErrorCode = "LO0002";
+                        response.ErrorMessage = "User token not found.";
+
+                        return response;
+                    }
+
+                    var user = mapper.Map<UserLoginDTO>(userQuery);
+
+                    userDetail.User = user;
+                    userDetail.UserToken = token.Token;
+
+                    response.Item = userDetail;
+
+                    response.ErrorCode = "0000";
+                    response.ErrorMessage = "Success";
+
+                    transaction.Commit();
+
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+
+            return response;
+        }
+        #endregion
     }
 }

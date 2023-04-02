@@ -14,12 +14,13 @@ using Web.Backend.DTO.ProductDetails;
 using Web.Backend.DTO.Products;
 using Web.Backend.DTO.Roles;
 using Web.Backend.DTO.Users;
+using Web.Backend.DTO.UserTokens;
 
-namespace Web.Backend.BLL.ObjectMappers
+namespace Web.Backend.BLL.ModelMappers
 {
-    public class ObjectMapper : Profile
+    public class ModelMapper : Profile
     {
-        public ObjectMapper()
+        public ModelMapper()
         {
             CreateMap<User, UserDTO>();
             CreateMap<Role, RoleDTO>();
@@ -31,6 +32,9 @@ namespace Web.Backend.BLL.ObjectMappers
             CreateMap<Product, ProductDTO>();
             CreateMap<ProductSize, ProductSizeDTO>();
             CreateMap<ProductColor, ProductColorDTO>();
+            CreateMap<User, RegistrationDTO>();
+            CreateMap<UserToken, UserTokenDTO>();
+            CreateMap<User, UserLoginDTO>();
 
             CreateMap<UserDTO, User>();
             CreateMap<RoleDTO, Role>();
@@ -42,7 +46,9 @@ namespace Web.Backend.BLL.ObjectMappers
             CreateMap<ProductDTO, Product>();
             CreateMap<ProductSizeDTO, ProductSize>();
             CreateMap<ProductColorDTO, ProductColor>();
-
+            CreateMap<RegistrationDTO, User>();
+            CreateMap<UserTokenDTO, UserToken>();
+            CreateMap<UserLoginDTO, User>();
         }
     }
 }

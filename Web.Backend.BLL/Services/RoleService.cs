@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Web.Backend.BLL.IServices;
-using Web.Backend.BLL.ObjectMappers;
+using Web.Backend.BLL.ModelMappers;
 using Web.Backend.DAL;
 using Web.Backend.DTO.Roles;
 
@@ -23,7 +23,7 @@ namespace Web.Backend.BLL.Services
         public List<RoleDTO> GetRoles()
         {
             var response = new List<RoleDTO>();
-            var config = new MapperConfiguration(cfg => cfg.AddProfile<ObjectMapper>());
+            var config = new MapperConfiguration(cfg => cfg.AddProfile<ModelMapper>());
             var mapper = config.CreateMapper();
 
             try

@@ -500,11 +500,9 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
             entity.ToTable("USER_TOKEN");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreateBy).HasMaxLength(50);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Expire).HasColumnType("datetime");
-            entity.Property(e => e.Token).HasMaxLength(255);
             entity.Property(e => e.UpdateBy).HasMaxLength(50);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });

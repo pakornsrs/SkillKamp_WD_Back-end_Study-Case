@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Web.Backend.BLL.IServices;
-using Web.Backend.BLL.ObjectMappers;
+using Web.Backend.BLL.ModelMappers;
 using Web.Backend.DAL;
 using Web.Backend.DTO;
 using Web.Backend.DTO.ProductColors;
@@ -16,7 +16,7 @@ namespace Web.Backend.BLL.Services
     {
         private readonly SkillkampWdStudyCaseDbContext dbContext;
 
-        private IMapper mapper = new MapperConfiguration(cfg => cfg.AddProfile<ObjectMapper>()).CreateMapper();
+        private IMapper mapper = new MapperConfiguration(cfg => cfg.AddProfile<ModelMapper>()).CreateMapper();
 
         public ProductColorService(SkillkampWdStudyCaseDbContext dbContext)
         {

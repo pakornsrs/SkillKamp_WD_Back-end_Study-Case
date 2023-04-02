@@ -13,5 +13,6 @@ namespace Web.Backend.BLL.IServices
     public interface IUserService
     {
         public Task<ServiceResponseModel<RegistrationDTO>> Registration(UserDTO user, List<AddressDTO> addressList, List<CardDTO> userCard);
+        public  Task<ServiceResponseModel<LoginDTO>> Login(string username, string password);
     }
 }
