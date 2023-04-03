@@ -5,6 +5,8 @@ using Web.Backend.DTO.Config;
 using Web.Backend.DTO;
 using Web.Backend.Models.Users;
 using Web.Backend.DTO.Users;
+using Web.Backend.DTO.Enums;
+using ActionResult = Web.Backend.DTO.Enums.ActionResult;
 
 namespace Web.Backend.Controllers
 {
@@ -24,7 +26,7 @@ namespace Web.Backend.Controllers
 
             try
             {
-                result = await userService.Registration(req.User, req.UserAddress, req.UserCard);
+                result = userService.Registration(req.User, req.UserAddress, req.UserCard);
             }
             catch (Exception ex)
             {
@@ -42,7 +44,7 @@ namespace Web.Backend.Controllers
 
             try
             {
-                result = await userService.Login(req.Username, req.Password);
+                result = userService.Login(req.Username, req.Password);
             }
             catch (Exception ex)
             {

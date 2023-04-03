@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Web.Backend.BLL.IServices;
 using Web.Backend.BLL.ModelMappers;
 using Web.Backend.DAL;
+using Web.Backend.DTO;
 using Web.Backend.DTO.Roles;
 
 namespace Web.Backend.BLL.Services
@@ -15,32 +16,39 @@ namespace Web.Backend.BLL.Services
     {
         private readonly SkillkampWdStudyCaseDbContext dbContext;
 
+        private IMapper mapper = new MapperConfiguration(cfg => cfg.AddProfile<ModelMapper>()).CreateMapper();
+
         public RoleService(SkillkampWdStudyCaseDbContext dbContext)
         {
             this.dbContext = dbContext;
         }
 
-        public List<RoleDTO> GetRoles()
+        public ServiceResponseModel<List<RoleDTO>> GetRoles()
         {
-            var response = new List<RoleDTO>();
-            var config = new MapperConfiguration(cfg => cfg.AddProfile<ModelMapper>());
-            var mapper = config.CreateMapper();
+            var response = new ServiceResponseModel<List<RoleDTO>>();
 
             try
             {
                 var query = (from q in this.dbContext.Roles
                               select q).ToList();
 
-                foreach(var item in query)
+                var roles = new List<RoleDTO>();
+
+                foreach (var item in query)
                 {
                     var role = mapper.Map<RoleDTO>(item);
-                    response.Add(role);
+                    roles.Add(role);
                 }
+
+                response.Item = roles;
+
+                response.ErrorCode = "0000";
+                response.ErrorMessage = "Success";
             }
             catch (Exception ex)
             {
-
-                throw;
+                response.ErrorCode = "BE9999";
+                response.ErrorMessage = "Interal server error.";
             }
 
             return response;

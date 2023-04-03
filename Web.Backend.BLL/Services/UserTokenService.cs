@@ -11,6 +11,7 @@ using Web.Backend.DTO.Inventories;
 using Web.Backend.BLL.ModelMappers;
 using Web.Backend.BLL.IServices;
 using Web.Backend.DTO.UserTokens;
+using Web.Backend.DTO;
 
 namespace Web.Backend.BLL.Services
 {
@@ -24,9 +25,9 @@ namespace Web.Backend.BLL.Services
             this.dbContext = dbContext;
         }
 
-        public UserTokenDTO CreateUserToken(int userId, string username, string role)
+        public ServiceResponseModel<UserTokenDTO> CreateUserToken(int userId, string username, string role)
         {
-            var response = new UserTokenDTO();
+            var response = new ServiceResponseModel<UserTokenDTO>();
             var tranDateTime = DateTimeUtility.GetDateTimeThai();
 
             try
@@ -44,19 +45,23 @@ namespace Web.Backend.BLL.Services
                 dbContext.Set<UserToken>().Add(userToken);
                 dbContext.SaveChanges();
 
-                response = mapper.Map<UserTokenDTO>(userToken);
+                response.Item = mapper.Map<UserTokenDTO>(userToken);
+
+                response.ErrorCode = "0000";
+                response.ErrorMessage = "Success";
             }
             catch (Exception ex)
             {
-                throw;
+                response.ErrorCode = "BE9999";
+                response.ErrorMessage = "Interal server error.";
             }
 
             return response;
         }
 
-        public UserTokenDTO UpdateUserToken(int tokenId)
+        public ServiceResponseModel<UserTokenDTO> UpdateUserToken(int tokenId)
         {
-            var response = new UserTokenDTO();
+            var response = new ServiceResponseModel<UserTokenDTO>();
             var tranDateTime = DateTimeUtility.GetDateTimeThai();
 
             try
@@ -72,11 +77,15 @@ namespace Web.Backend.BLL.Services
                 dbContext.Set<UserToken>().Update(tokenQuery);
                 dbContext.SaveChanges();
 
-                response = mapper.Map<UserTokenDTO>(tokenQuery);
+                response.Item = mapper.Map<UserTokenDTO>(tokenQuery);
+
+                response.ErrorCode = "0000";
+                response.ErrorMessage = "Success";
             }
             catch (Exception ex)
             {
-                throw;
+                response.ErrorCode = "BE9999";
+                response.ErrorMessage = "Interal server error.";
             }
 
             return response;

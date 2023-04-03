@@ -9,7 +9,7 @@ namespace Web.Backend.BLL.IServices
 {
     public interface IProductSizeService
     {
-        public List<ProductSizeDTO> GetAllProductSize();
-        public ProductSizeDTO GetProductSizeById(int sizeId);
+        public ServiceResponseModel<List<ProductSizeDTO>> GetAllProductSize();
+        public ServiceResponseModel<ProductSizeDTO> GetProductSizeById(int sizeId);
     }
 }

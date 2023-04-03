@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Web.Backend.BLL.UtilityMethods
 {
-    public static class StringHashing
+    public static class HashingUtility
     {
         public static string GetHashingString(string text, string salt = "")
         {

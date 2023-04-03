@@ -14,6 +14,7 @@ using Web.Backend.DAL.Entities;
 using Web.Backend.DTO;
 using Web.Backend.DTO.Addresses;
 using Web.Backend.DTO.Cards;
+using Web.Backend.DTO.Enums;
 using Web.Backend.DTO.Users;
 using Web.Backend.DTO.UserTokens;
 
@@ -24,21 +25,27 @@ namespace Web.Backend.BLL.Services
 		private readonly SkillkampWdStudyCaseDbContext dbContext;
         private readonly IRoleService roleService;
         private readonly IUserTokenService userTokenService;
+        private readonly IUserAddressService userAddressService;
+        private readonly IUserCardService userCardService;
 
         private IMapper mapper = new MapperConfiguration(cfg => cfg.AddProfile<ModelMapper>()).CreateMapper();
 
         public UserService(SkillkampWdStudyCaseDbContext dbContext,
                            IRoleService roleService,
-                           IUserTokenService userTokenService)
+                           IUserTokenService userTokenService,
+                           IUserAddressService userAddressService,
+                           IUserCardService userCardService)
 		{
 			this.dbContext = dbContext;
             this.roleService = roleService;
             this.userTokenService = userTokenService;
+            this.userAddressService = userAddressService;
+            this.userCardService = userCardService;
 
         }
 
         #region public method
-        public async Task<ServiceResponseModel<RegistrationDTO>> Registration(UserDTO userDetail, List<AddressDTO> addressList ,List<CardDTO> userCardList)
+        public ServiceResponseModel<RegistrationDTO> Registration(UserDTO userDetail, List<AddressDTO> addressList ,List<CardRequestDTO> userCardList)
         {
             var response = new ServiceResponseModel<RegistrationDTO>();
             var tranDateTime = DateTimeUtility.GetDateTimeThai();
@@ -48,13 +55,23 @@ namespace Web.Backend.BLL.Services
 				try
 				{
                     // Get user role
-                    var role = roleService.GetRoles();
+                    var roleServiceResponse = roleService.GetRoles();
+
+                    if (roleServiceResponse.IsError)
+                    {
+                        response.ErrorCode = "RE0001";
+                        response.ErrorMessage = "Cannot get user roles";
+
+                        return response;
+                    }
+
+                    var role = roleServiceResponse.Item;
 
                     // Insert data for table [USER]
 
                     var user = mapper.Map<User>(userDetail);
 
-                    user.Password = StringHashing.GetHashingString(userDetail.Password);
+                    user.Password = HashingUtility.GetHashingString(userDetail.Password);
                     user.BirthDate = DateTimeUtility.ConvertUnixToDateTime(userDetail.BirthDate);
 
                     user.CreateDate = tranDateTime;
@@ -68,42 +85,45 @@ namespace Web.Backend.BLL.Services
 
                     // Insert data for table [USER_ADDRESS]
 
-                    var addresses = mapper.Map<List<UserAddress>>(addressList);
+                    var addAddressServiceResponse = userAddressService.AddUserAddresses(user.Id, addressList);
 
-                    foreach (var item in addresses)
+                    if(addAddressServiceResponse.IsError)
                     {
-                        item.UserId = user.Id;
-                        item.CreateDate = tranDateTime;
-                        item.UpdateDate = tranDateTime;
-                        item.CreateBy = "system";
-                        item.UpdateBy = "system";
+                        response.ErrorCode = "RE0002";
+                        response.ErrorMessage = "Insert user address failed.";
+
+                        return response;
                     }
 
-                    dbContext.Set<UserAddress>().AddRange(addresses);
-                    dbContext.SaveChanges();
+                    var addAddress = addAddressServiceResponse.Item;
 
                     // Insert data for table [USER_CARD]
 
-                    if(userCardList != null && userCardList.Count > 0)
+                    var addUserCardServiceResponse = userCardService.AddUserCards(user.Id, userCardList);
+
+                    if (addUserCardServiceResponse.IsError)
                     {
-                        var cards = mapper.Map<List<UserCard>>(userCardList);
+                        response.ErrorCode = "RE0003";
+                        response.ErrorMessage = "Insert user card failed.";
 
-                        foreach (var item in cards)
-                        {
-                            item.UserId = user.Id;
-                            item.CreateDate = tranDateTime;
-                            item.UpdateDate = tranDateTime;
-                            item.CreateBy = "system";
-                            item.UpdateBy = "system";
-                        }
-
-                        dbContext.Set<UserCard>().AddRange(cards);
-                        dbContext.SaveChanges();
+                        return response;
                     }
+
+                    var addUserCard = addUserCardServiceResponse.Item;
 
                     // Generate Token and insert to table [User_Token]
 
-                    var userToken = userTokenService.CreateUserToken(user.Id, user.Username, "webuser");
+                    var userTokenServiceResponse = userTokenService.CreateUserToken(user.Id, user.Username, "webuser");
+
+                    if (userTokenServiceResponse.IsError)
+                    {
+                        response.ErrorCode = "RE0004";
+                        response.ErrorMessage = "Cannot create user token.";
+
+                        return response;
+                    }
+
+                    var userToken = userTokenServiceResponse.Item;
 
                     // Update data for tabel [User]
 
@@ -132,7 +152,7 @@ namespace Web.Backend.BLL.Services
             return response;
         }
 
-        public async Task<ServiceResponseModel<LoginDTO>> Login(string username, string password)
+        public ServiceResponseModel<LoginDTO> Login(string username, string password)
         {
             var response = new ServiceResponseModel<LoginDTO>();
             var userDetail = new LoginDTO();
@@ -144,7 +164,7 @@ namespace Web.Backend.BLL.Services
                 {
                     // Get user login
 
-                    password = StringHashing.GetHashingString(password);
+                    password = HashingUtility.GetHashingString(password);
 
                     var userQuery = (from q in this.dbContext.Users
                                  where q.Username == username && q.Password == password
@@ -159,15 +179,17 @@ namespace Web.Backend.BLL.Services
                     }
 
                     // Update user token
-                    var token = userTokenService.UpdateUserToken(userQuery.UserTokenId.Value);
+                    var tokenServiceResponse = userTokenService.UpdateUserToken(userQuery.UserTokenId.Value);
 
-                    if (token == null)
+                    if (tokenServiceResponse.IsError)
                     {
                         response.ErrorCode = "LO0002";
                         response.ErrorMessage = "User token not found.";
 
                         return response;
                     }
+
+                    var token = tokenServiceResponse.Item;
 
                     var user = mapper.Map<UserLoginDTO>(userQuery);
 
@@ -191,6 +213,7 @@ namespace Web.Backend.BLL.Services
 
             return response;
         }
+
         #endregion
     }
 }

@@ -12,6 +12,6 @@ namespace Web.Backend.Models.Users
         public UserDTO User { get; set; }
 
         public List<AddressDTO> UserAddress { get; set; }
-        public List<CardDTO> UserCard { get; set; }
+        public List<CardRequestDTO> UserCard { get; set; }
     }
 }

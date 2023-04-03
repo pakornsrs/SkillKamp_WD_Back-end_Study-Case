@@ -9,6 +9,7 @@ using Web.Backend.BLL.ModelMappers;
 using Web.Backend.BLL.UtilityMethods;
 using Web.Backend.DAL;
 using Web.Backend.DAL.Entities;
+using Web.Backend.DTO;
 using Web.Backend.DTO.Inventories;
 using Web.Backend.DTO.ProductDetails;
 
@@ -24,9 +25,9 @@ namespace Web.Backend.BLL.Services
             this.dbContext = dbContext;
         }
 
-        public ProductDetailDTO CreateProductDetail(ProductDetailDTO req)
+        public ServiceResponseModel<ProductDetailDTO> CreateProductDetail(ProductDetailDTO req)
         {
-            var response = new ProductDetailDTO();
+            var response = new ServiceResponseModel<ProductDetailDTO>();
             var tranDateTime = DateTimeUtility.GetDateTimeThai();
 
             try
@@ -41,12 +42,15 @@ namespace Web.Backend.BLL.Services
                 dbContext.Set<ProductDetail>().Add(productDetail);
                 dbContext.SaveChanges();
 
-                response = mapper.Map<ProductDetailDTO>(productDetail);
+                response.Item = mapper.Map<ProductDetailDTO>(productDetail);
+
+                response.ErrorCode = "0000";
+                response.ErrorMessage = "Success";
             }
             catch (Exception ex)
             {
-
-                throw;
+                response.ErrorCode = "BE9999";
+                response.ErrorMessage = "Interal server error.";
             }
 
             return response;

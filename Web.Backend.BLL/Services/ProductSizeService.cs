@@ -23,33 +23,40 @@ namespace Web.Backend.BLL.Services
             this.dbContext = dbContext;
         }
 
-        public List<ProductSizeDTO> GetAllProductSize()
+        public ServiceResponseModel<List<ProductSizeDTO>> GetAllProductSize()
         {
-            var response = new List<ProductSizeDTO>();
+            var response = new ServiceResponseModel<List<ProductSizeDTO>>();
 
             try
             {
                 var query = (from q in this.dbContext.ProductSizes
                              select q).ToList();
 
+                var sizes = new List<ProductSizeDTO>();
+
                 foreach (var item in query)
                 {
                     var size = mapper.Map<ProductSizeDTO>(item);
-                    response.Add(size);
+                    sizes.Add(size);
                 }
+
+                response.Item = sizes;
+
+                response.ErrorCode = "0000";
+                response.ErrorMessage = "Success";
             }
             catch (Exception ex)
             {
-
-                throw;
+                response.ErrorCode = "BE9999";
+                response.ErrorMessage = "Interal server error.";
             }
 
             return response;
         }
 
-        public ProductSizeDTO GetProductSizeById(int sizeId)
+        public ServiceResponseModel<ProductSizeDTO> GetProductSizeById(int sizeId)
         {
-            var response = new ProductSizeDTO();
+            var response = new ServiceResponseModel<ProductSizeDTO>();
 
             try
             {
@@ -57,13 +64,15 @@ namespace Web.Backend.BLL.Services
                              where q.Id == sizeId
                              select q).FirstOrDefault();
 
-                response = mapper.Map<ProductSizeDTO>(query);
+                response.Item = mapper.Map<ProductSizeDTO>(query);
 
+                response.ErrorCode = "0000";
+                response.ErrorMessage = "Success";
             }
             catch (Exception ex)
             {
-
-                throw;
+                response.ErrorCode = "BE9999";
+                response.ErrorMessage = "Interal server error.";
             }
 
             return response;

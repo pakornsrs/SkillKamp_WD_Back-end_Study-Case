@@ -7,12 +7,13 @@ using Web.Backend.DTO.Addresses;
 using Web.Backend.DTO.Cards;
 using Web.Backend.DTO.Users;
 using Web.Backend.DTO;
+using Web.Backend.DTO.Enums;
 
 namespace Web.Backend.BLL.IServices
 {
     public interface IUserService
     {
-        public Task<ServiceResponseModel<RegistrationDTO>> Registration(UserDTO user, List<AddressDTO> addressList, List<CardDTO> userCard);
-        public  Task<ServiceResponseModel<LoginDTO>> Login(string username, string password);
+        public ServiceResponseModel<RegistrationDTO> Registration(UserDTO user, List<AddressDTO> addressList, List<CardRequestDTO> userCard);
+        public  ServiceResponseModel<LoginDTO> Login(string username, string password);
     }
 }

@@ -30,8 +30,7 @@ namespace Web.Backend.BLL.UtilityMethods
                 claims: claims,
                 expires: expireDateTime,
                 signingCredentials: new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey)),
-                    SecurityAlgorithms.HmacSha256)
+                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey)),SecurityAlgorithms.HmacSha256)
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token); 

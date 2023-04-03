@@ -54,7 +54,7 @@ namespace Web.Backend.BLL.Services
             catch (Exception ex)
             {
                 response.Item = null;
-                response.ErrorCode = "EX9999";
+                response.ErrorCode = "BE9999";
                 response.ErrorMessage = "Service internal error.";
 
                 return response;

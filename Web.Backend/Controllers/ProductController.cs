@@ -24,7 +24,25 @@ namespace Web.Backend.Controllers
 
             try
             {
-                result = await productService.AddNewProduct(req.AddProduct, req.ProductSpecificDetail, req.Inventory);
+                result = productService.AddNewProduct(req.AddProduct, req.ProductSpecificDetail, req.Inventory);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return StatusCode(200, result);
+        }
+
+        [HttpPost()]
+        [Route("api/product/search")]
+        public async Task<IActionResult> SearchProduct([FromBody] SearchProductRequestMode req)
+        {
+            var result = new ServiceResponseModel<List<ProductDTO>>();
+
+            try
+            {
+                result = productService.SerchProductByKeyword(req.Keywork);
             }
             catch (Exception ex)
             {

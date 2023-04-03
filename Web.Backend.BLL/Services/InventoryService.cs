@@ -25,9 +25,9 @@ namespace Web.Backend.BLL.Services
             this.dbContext = dbContext;
         }
 
-        public InventoryDTO CreateInventory(InventoryDTO req)
+        public ServiceResponseModel<InventoryDTO> CreateInventory(InventoryDTO req)
         {
-            var response = new InventoryDTO();
+            var response = new ServiceResponseModel<InventoryDTO>();
             var tranDateTime = DateTimeUtility.GetDateTimeThai();
 
             try
@@ -42,12 +42,15 @@ namespace Web.Backend.BLL.Services
                 dbContext.Set<ProductInventory>().Add(inventory);
                 dbContext.SaveChanges();
 
-                response = mapper.Map<InventoryDTO>(inventory);
+                response.Item = mapper.Map<InventoryDTO>(inventory);
+
+                response.ErrorCode = "0000";
+                response.ErrorMessage = "Success";
             }
             catch (Exception ex)
             {
-
-                throw;
+                response.ErrorCode = "BE9999";
+                response.ErrorMessage = "Interal server error.";
             }
 
             return response;

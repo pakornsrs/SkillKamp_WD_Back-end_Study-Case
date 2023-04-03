@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Web.Backend.BLL.IServices;
 using Web.Backend.BLL.Services;
 using Web.Backend.DAL;
@@ -25,7 +26,12 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductColorService, ProductColorService>();
 builder.Services.AddScoped<IProductSizeService, ProductSizeService>();
 builder.Services.AddScoped<IUserTokenService, UserTokenService>();
-# endregion
+builder.Services.AddScoped<IUserCardService, UserCardService>();
+builder.Services.AddScoped<IUserAddressService, UserAddressService>();
+#endregion
+
+//var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+//builder.Services.AddJwtAuthentication(configuration);
 
 var app = builder.Build();
 

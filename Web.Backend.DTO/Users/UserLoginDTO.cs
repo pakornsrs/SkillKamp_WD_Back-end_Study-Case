@@ -18,6 +18,6 @@ namespace Web.Backend.DTO.Users
         public string TelNo { get; set; }
         public string Email { get; set; }
         public List<AddressDTO> AddressList { get; set; }
-        public List<CardDTO> CardList { get; set; }
+        public List<CardRequestDTO> CardList { get; set; }
     }
 }

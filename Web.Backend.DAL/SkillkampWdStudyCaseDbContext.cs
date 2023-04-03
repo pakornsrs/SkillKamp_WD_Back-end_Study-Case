@@ -482,10 +482,8 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
             entity.ToTable("USER_CARD");
 
             entity.Property(e => e.CardExpireDate).HasColumnType("datetime");
-            entity.Property(e => e.CardNo).HasMaxLength(20);
             entity.Property(e => e.CreateBy).HasMaxLength(50);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.NameOnCard).HasMaxLength(100);
             entity.Property(e => e.UpdateBy).HasMaxLength(50);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
 

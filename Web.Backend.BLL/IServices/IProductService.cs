@@ -12,6 +12,8 @@ namespace Web.Backend.BLL.IServices
 {
     public interface IProductService
     {
-        public Task<ServiceResponseModel<ProductDTO>> AddNewProduct(AddProductDTO productReq, ProductDetailDTO productDetailReq, InventoryDTO inventoryReq);
+        public ServiceResponseModel<ProductDTO> AddNewProduct(AddProductDTO productReq, ProductDetailDTO productDetailReq, InventoryDTO inventoryReq);
+        public ServiceResponseModel<List<ProductDTO>> SerchProductByKeyword(string Keyword);
+
     }
 }

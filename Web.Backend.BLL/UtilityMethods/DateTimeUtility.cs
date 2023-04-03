@@ -28,5 +28,20 @@ namespace Web.Backend.BLL.UtilityMethods
                 return dateTimeOffset.DateTime;
             }
         }
+
+        public static string GetUnixTimestamp(int year, int month, int day, int? hour = null, int? min = null, int? sec = null)
+        {
+            if (hour == null) hour = 0;
+            if (min == null) min = 0;
+            if (sec == null) sec = 0;
+  
+            DateTime dateTime = new DateTime(year, month, day, hour.Value, min.Value, sec.Value);
+            DateTime unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+            TimeSpan timeSpan = dateTime - unixEpoch;
+            long unixTimeMilliseconds = (long)timeSpan.TotalMilliseconds;
+
+            return unixTimeMilliseconds.ToString();
+        }
     }
 }

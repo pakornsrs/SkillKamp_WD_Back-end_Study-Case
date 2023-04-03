@@ -42,7 +42,7 @@ namespace Web.Backend.BLL.Services
             this.productColorService = productColorService;
         }
 
-        public async Task<ServiceResponseModel<ProductDTO>> AddNewProduct(AddProductDTO productReq,ProductDetailDTO productDetailReq,InventoryDTO inventoryReq)
+        public ServiceResponseModel<ProductDTO> AddNewProduct(AddProductDTO productReq,ProductDetailDTO productDetailReq,InventoryDTO inventoryReq)
         {
             var response = new ServiceResponseModel<ProductDTO>();
             var tranDateTime = DateTimeUtility.GetDateTimeThai();
@@ -65,13 +65,29 @@ namespace Web.Backend.BLL.Services
 
                     // Insert data to table [Product]
 
-                    var inventory = inventoryService.CreateInventory(inventoryReq);
+                    var inventoryServiceResponse = inventoryService.CreateInventory(inventoryReq);
+
+                    if (inventoryServiceResponse.IsError)
+                    {
+                        response.ErrorCode = "AP0001";
+                        response.ErrorMessage = "Cannot add product inventory.";
+                    }
+
+                    var inventory = inventoryServiceResponse.Item;
 
                     // Inser data to tabe [Product_Detail]
 
                     productDetailReq.ProductId = product.Id;
                     productDetailReq.InventoryId = inventory.Id;
-                    var productDetail = productDetailService.CreateProductDetail(productDetailReq);
+                    var productDetailServiceResponse = productDetailService.CreateProductDetail(productDetailReq);
+
+                    if (productDetailServiceResponse.IsError)
+                    {
+                        response.ErrorCode = "AP0002";
+                        response.ErrorMessage = "Cannot add product detail.";
+                    }
+
+                    var productDetail = productDetailServiceResponse.Item;
 
                     // Update table [Product]
 
@@ -83,8 +99,26 @@ namespace Web.Backend.BLL.Services
                     // Create response item
 
                     var responseItem = mapper.Map<ProductDTO>(product);
-                    var productSize = productSizeService.GetProductSizeById(productDetail.SizeId.Value);
-                    var productColor = productColorService.GetProductSizeById(productDetail.ColorId.Value);
+
+                    var productSizeServiceResponse = productSizeService.GetProductSizeById(productDetail.SizeId.Value);
+
+                    if (productSizeServiceResponse.IsError)
+                    {
+                        response.ErrorCode = "AP0002";
+                        response.ErrorMessage = "Cannot add product detail.";
+                    }
+
+                    var productSize = productSizeServiceResponse.Item;
+
+                    var productColorServiceResponse = productColorService.GetProductSizeById(productDetail.ColorId.Value);
+
+                    if (productColorServiceResponse.IsError)
+                    {
+                        response.ErrorCode = "AP0002";
+                        response.ErrorMessage = "Cannot add product detail.";
+                    }
+
+                    var productColor = productColorServiceResponse.Item;
 
                     responseItem.SizeId = productDetail.SizeId.Value;
                     responseItem.ColorId = productDetail.ColorId.Value;
@@ -105,10 +139,64 @@ namespace Web.Backend.BLL.Services
                 }
                 catch (Exception ex)
                 {
-
                     transaction.Rollback();
-                    throw;
+
+                    response.ErrorCode = "BE9999";
+                    response.ErrorMessage = "Internal server error.";
                 }
+            }
+
+            return response;
+        }
+
+        public ServiceResponseModel<List<ProductDTO>> SerchProductByKeyword(string Keyword)
+        {
+            var response = new ServiceResponseModel<List<ProductDTO>>();
+
+            try
+            {
+                var query = (from q in this.dbContext.Products
+                             where q.ProductNameTh.Contains(Keyword) || q.ProductNameEn.Contains(Keyword)
+                             join p in this.dbContext.ProductDetails on q.Id equals p.ProductId
+                             join i in this.dbContext.ProductInventories on p.InventoryId equals i.Id
+                             join d in this.dbContext.DiscountCampeigns on q.DiscountId equals d.Id
+                             join s in this.dbContext.ProductSizes on p.SizeId equals s.Id
+                             join c in this.dbContext.ProductColors on p.ColorId equals c.Id
+                             select new ProductDTO
+                             {
+                                 Id = q.Id,
+                                 CategoryId = q.CategoryId,
+                                 ProductDetailId = q.ProductDetailId,
+                                 ProductNameTh = q.ProductNameTh,
+                                 ProductNameEn = q.ProductNameEn,
+                                 DescTh = q.DescTh,
+                                 DescEn = q.DescEn,
+                                 Price = p.Price,
+                                 CanUseDiscountCode = q.CanUseDiscountCode,
+                                 IsDiscount = q.IsDiscount,
+                                 DiscountId = q.DiscountId,
+                                 DiscountDesc = d.DescTh,
+                                 DiscountPercent = d.DisconutPercent,
+                                 ColorId = c.Id,
+                                 ColorDescTh = c.ColorNameTh,
+                                 ColorDescEn = c.ColorNameEn,
+                                 SizeId = s.Id,
+                                 SizeDescTh = s.SizeDescTh,
+                                 SizeDescEn = s.SizeDescEn,
+                                 InvertoryId = i.Id,
+                                 Quantity = i.Quantity
+
+                             }).ToList();
+                
+                response.Item = query;
+
+                response.ErrorCode = "0000";
+                response.ErrorMessage = "Success";
+            }
+            catch (Exception ex)
+            {
+                response.ErrorCode = "BE9999";
+                response.ErrorMessage = "Internal server error.";
             }
 
             return response;

@@ -25,7 +25,7 @@ namespace Web.Backend.BLL.ModelMappers
             CreateMap<User, UserDTO>();
             CreateMap<Role, RoleDTO>();
             CreateMap<UserAddress, AddressDTO>();           
-            CreateMap<UserCard, CardDTO>();
+            CreateMap<UserCard, CardRequestDTO>();
             CreateMap<ProductDetail, ProductDetailDTO>();
             CreateMap<ProductInventory, InventoryDTO>();
             CreateMap<Product, AddProductDTO>();
@@ -35,11 +35,12 @@ namespace Web.Backend.BLL.ModelMappers
             CreateMap<User, RegistrationDTO>();
             CreateMap<UserToken, UserTokenDTO>();
             CreateMap<User, UserLoginDTO>();
+            CreateMap<UserCard, CardResponseDTO>();
 
             CreateMap<UserDTO, User>();
             CreateMap<RoleDTO, Role>();
             CreateMap<AddressDTO, UserAddress>();
-            CreateMap<CardDTO, UserCard>();
+            CreateMap<CardRequestDTO, UserCard>();
             CreateMap<ProductDetailDTO, ProductDetail>();
             CreateMap<InventoryDTO, ProductInventory>();
             CreateMap<AddProductDTO, Product>();
@@ -49,6 +50,7 @@ namespace Web.Backend.BLL.ModelMappers
             CreateMap<RegistrationDTO, User>();
             CreateMap<UserTokenDTO, UserToken>();
             CreateMap<UserLoginDTO, User>();
+            CreateMap<CardResponseDTO, UserCard>();
         }
     }
 }
