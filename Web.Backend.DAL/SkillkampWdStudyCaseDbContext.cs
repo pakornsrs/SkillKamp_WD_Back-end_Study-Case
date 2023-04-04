@@ -197,7 +197,6 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.DescEn).HasMaxLength(255);
             entity.Property(e => e.DescTh).HasMaxLength(255);
-            entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.ProductNameEn).HasMaxLength(50);
             entity.Property(e => e.ProductNameTh).HasMaxLength(50);
             entity.Property(e => e.UpdateBy).HasMaxLength(50);

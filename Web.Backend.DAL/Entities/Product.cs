@@ -9,7 +9,9 @@ public partial class Product
 
     public int? CategoryId { get; set; }
 
-    public int? ProductDetailId { get; set; }
+    public int? ProductDefaultDetailId { get; set; }
+
+    public bool? IsMultiDetail { get; set; }
 
     public string? ProductNameTh { get; set; }
 
@@ -18,8 +20,6 @@ public partial class Product
     public string? DescTh { get; set; }
 
     public string? DescEn { get; set; }
-
-    public decimal? Price { get; set; }
 
     public bool? CanUseDiscountCode { get; set; }
 

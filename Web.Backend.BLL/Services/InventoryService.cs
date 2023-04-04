@@ -25,24 +25,39 @@ namespace Web.Backend.BLL.Services
             this.dbContext = dbContext;
         }
 
-        public ServiceResponseModel<InventoryDTO> CreateInventory(InventoryDTO req)
+        public ServiceResponseModel<List<InventoryDTO>> CreateInventory(List<InventoryDTO> req)
         {
-            var response = new ServiceResponseModel<InventoryDTO>();
+            var response = new ServiceResponseModel<List<InventoryDTO>>();
             var tranDateTime = DateTimeUtility.GetDateTimeThai();
 
             try
             {
-                var inventory = mapper.Map<ProductInventory>(req);
+                var inventoryies = new List<ProductInventory>();
+                
+                foreach(var item in req)
+                {
+                    var inventory = mapper.Map<ProductInventory>(item);
 
-                inventory.CreateDate = tranDateTime;
-                inventory.UpdateDate = tranDateTime;
-                inventory.CreateBy = "system";
-                inventory.UpdateBy = "system";
+                    inventory.CreateDate = tranDateTime;
+                    inventory.UpdateDate = tranDateTime;
+                    inventory.CreateBy = "system";
+                    inventory.UpdateBy = "system";
 
-                dbContext.Set<ProductInventory>().Add(inventory);
+                    inventoryies.Add(inventory);
+                }
+
+                dbContext.Set<ProductInventory>().AddRange(inventoryies);
                 dbContext.SaveChanges();
 
-                response.Item = mapper.Map<InventoryDTO>(inventory);
+                var result = new List<InventoryDTO>();
+
+                foreach(var item in inventoryies)
+                {
+                    var _result = mapper.Map<InventoryDTO>(item);
+                    result.Add(_result);
+                }
+
+                response.Item = result;
 
                 response.ErrorCode = "0000";
                 response.ErrorMessage = "Success";

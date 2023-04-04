@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Web.Backend.DTO;
+using Web.Backend.DTO.ProductSizes;
 
 namespace Web.Backend.BLL.IServices
 {

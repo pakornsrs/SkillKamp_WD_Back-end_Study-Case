@@ -124,6 +124,23 @@ namespace Web.Backend.BLL.Services
                     dbContext.Set<DiscountCampeign>().UpdateRange(query);
                     dbContext.SaveChanges();
 
+                    // Update product
+
+                    var product = (from q in this.dbContext.Products
+                                   where q.DiscountId != null && campeignIdList.Contains(q.DiscountId.Value)
+                                   select q).ToList();
+
+                    foreach (var item in product)
+                    {
+                        item.IsDiscount = false;
+                        item.DiscountId = 0;
+                        item.UpdateDate = tranDateTime;
+                        item.UpdateBy = "system";
+                    }
+
+                    dbContext.Set<Product>().UpdateRange(product);
+                    dbContext.SaveChanges();
+
                     response.Item = "Terminate success";
 
                     response.ErrorCode = "0000";

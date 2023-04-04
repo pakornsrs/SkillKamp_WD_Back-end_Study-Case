@@ -8,6 +8,7 @@ namespace Web.Backend.DTO.Products
 {
     public class AddProductDTO
     {
+        public bool? IsMultiDetail { get; set; }
         public int? CategoryId { get; set; } = null;
         public string? ProductNameTh { get; set; }
         public string? ProductNameEn { get; set; }

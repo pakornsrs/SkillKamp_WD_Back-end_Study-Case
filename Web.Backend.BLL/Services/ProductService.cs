@@ -42,19 +42,30 @@ namespace Web.Backend.BLL.Services
             this.productColorService = productColorService;
         }
 
-        public ServiceResponseModel<ProductDTO> AddNewProduct(AddProductDTO productReq,ProductDetailDTO productDetailReq,InventoryDTO inventoryReq)
+        public ServiceResponseModel<DefaultResponseModel> AddNewProduct(AddProductDTO productReq,List<ProductDetailDTO> productDetailReq,List<InventoryDTO> inventoryReq)
         {
-            var response = new ServiceResponseModel<ProductDTO>();
+            var response = new ServiceResponseModel<DefaultResponseModel>();
+            var defaultMode = new DefaultResponseModel();
             var tranDateTime = DateTimeUtility.GetDateTimeThai();
 
             using (IDbContextTransaction transaction = this.dbContext.Database.BeginTransaction())
             {
                 try
                 {
+                    // Check data
+                    if(productDetailReq.Count != inventoryReq.Count)
+                    {
+                        response.ErrorCode = "AP0001";
+                        response.ErrorMessage = "In correct request data.";
+
+                        return response;
+                    }
+
                     // Insert data to table [Product]
 
                     var product = mapper.Map<Product>(productReq);
 
+                    product.DiscountId = 0;
                     product.CreateDate = tranDateTime;
                     product.UpdateDate = tranDateTime;
                     product.CreateBy = "system";
@@ -63,74 +74,63 @@ namespace Web.Backend.BLL.Services
                     dbContext.Set<Product>().Add(product);
                     dbContext.SaveChanges();  
 
-                    // Insert data to table [Product]
+                    // Insert data to table [Inventory]
 
                     var inventoryServiceResponse = inventoryService.CreateInventory(inventoryReq);
 
                     if (inventoryServiceResponse.IsError)
                     {
-                        response.ErrorCode = "AP0001";
+                        response.ErrorCode = "AP0002";
                         response.ErrorMessage = "Cannot add product inventory.";
+
+                        return response;
                     }
 
-                    var inventory = inventoryServiceResponse.Item;
+                    var inventories = inventoryServiceResponse.Item;
 
                     // Inser data to tabe [Product_Detail]
 
-                    productDetailReq.ProductId = product.Id;
-                    productDetailReq.InventoryId = inventory.Id;
+                    for (int i = 0; i < inventories.Count; i++)
+                    {
+                        productDetailReq[i].ProductId = product.Id;
+                        productDetailReq[i].InventoryId = inventories[i].Id;
+                    }
+
                     var productDetailServiceResponse = productDetailService.CreateProductDetail(productDetailReq);
 
                     if (productDetailServiceResponse.IsError)
                     {
-                        response.ErrorCode = "AP0002";
+                        response.ErrorCode = "AP0003";
                         response.ErrorMessage = "Cannot add product detail.";
+
+                        return response;
                     }
 
-                    var productDetail = productDetailServiceResponse.Item;
+                    var productDetails = productDetailServiceResponse.Item;
 
                     // Update table [Product]
 
-                    product.ProductDetailId = productDetail.Id;
+                    if (product.IsMultiDetail.Value)
+                    {
+                        // multi detail
+                        foreach(var productDetail in productDetails)
+                        {
+                            if (product.ProductDefaultDetailId == null) product.ProductDefaultDetailId = productDetail.Id;
+                        }
+                    }
+                    else
+                    {
+                        foreach (var productDetail in productDetails)
+                        {
+                            product.ProductDefaultDetailId = productDetail.Id;
+                        }
+                    }
 
                     dbContext.Set<Product>().Update(product);
                     dbContext.SaveChanges();
 
-                    // Create response item
-
-                    var responseItem = mapper.Map<ProductDTO>(product);
-
-                    var productSizeServiceResponse = productSizeService.GetProductSizeById(productDetail.SizeId.Value);
-
-                    if (productSizeServiceResponse.IsError)
-                    {
-                        response.ErrorCode = "AP0002";
-                        response.ErrorMessage = "Cannot add product detail.";
-                    }
-
-                    var productSize = productSizeServiceResponse.Item;
-
-                    var productColorServiceResponse = productColorService.GetProductSizeById(productDetail.ColorId.Value);
-
-                    if (productColorServiceResponse.IsError)
-                    {
-                        response.ErrorCode = "AP0002";
-                        response.ErrorMessage = "Cannot add product detail.";
-                    }
-
-                    var productColor = productColorServiceResponse.Item;
-
-                    responseItem.SizeId = productDetail.SizeId.Value;
-                    responseItem.ColorId = productDetail.ColorId.Value;
-                    responseItem.InvertoryId = productDetail.InventoryId.Value;
-                    responseItem.Price = productDetail.Price.Value;
-                    responseItem.Quantity = inventory.Quantity;
-                    responseItem.ColorDescTh = productColor.ColorNameTh;
-                    responseItem.ColorDescEn = productColor.ColorNameEn;
-                    responseItem.SizeDescTh = productSize.SizeDescTh;
-                    responseItem.SizeDescEn = productSize.SizeDescEn;
-
-                    response.Item = responseItem;
+                    defaultMode.message = "Add product success";
+                    response.Item = defaultMode;
 
                     response.ErrorCode = "0000";
                     response.ErrorMessage = "Success";
@@ -149,6 +149,29 @@ namespace Web.Backend.BLL.Services
             return response;
         }
 
+        public ServiceResponseModel<DefaultResponseModel> UpdateStockProduct(List<UpdateProductStockDTO> productDetailUpdateReq)
+        {
+            var response = new ServiceResponseModel<DefaultResponseModel>();
+            var defaultMode = new DefaultResponseModel();
+            var tranDateTime = DateTimeUtility.GetDateTimeThai();
+
+            using (IDbContextTransaction transaction = this.dbContext.Database.BeginTransaction())
+            {
+                try
+                {
+
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+
+                    response.ErrorCode = "BE9999";
+                    response.ErrorMessage = "Internal server error.";
+                }
+            }
+
+            return response;
+        }
         public ServiceResponseModel<List<ProductDTO>> SerchProductByKeyword(string Keyword)
         {
             var response = new ServiceResponseModel<List<ProductDTO>>();
@@ -166,7 +189,7 @@ namespace Web.Backend.BLL.Services
                              {
                                  Id = q.Id,
                                  CategoryId = q.CategoryId,
-                                 ProductDetailId = q.ProductDetailId,
+                                 ProductDetailId = q.ProductDefaultDetailId,
                                  ProductNameTh = q.ProductNameTh,
                                  ProductNameEn = q.ProductNameEn,
                                  DescTh = q.DescTh,

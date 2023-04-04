@@ -11,16 +11,19 @@ namespace Web.Backend.Controllers
     public class ProductController : Controller
     {
         private readonly IProductService productService;
-        public ProductController(IProductService productService)
+        private readonly IProductDetailService productDetailService;
+        public ProductController(IProductService productService, 
+                                 IProductDetailService productDetailService)
         {
             this.productService = productService;
+            this.productDetailService = productDetailService;
         }
 
         [HttpPost()]
         [Route("api/product/add")]
         public async Task<IActionResult> AddNewProduct([FromBody] AddProductRequestModel req)
         {
-            var result = new ServiceResponseModel<ProductDTO>();
+            var result = new ServiceResponseModel<DefaultResponseModel>();
 
             try
             {
@@ -33,6 +36,25 @@ namespace Web.Backend.Controllers
 
             return StatusCode(200, result);
         }
+
+        [HttpPost()]
+        [Route("api/product/new/detail")]
+        public async Task<IActionResult> AddNewProductDetail([FromBody] AddNewProductDetailRequestModel req)
+        {
+            var result = new ServiceResponseModel<DefaultResponseModel>();
+
+            try
+            {
+                result = productDetailService.AddAditionalDetail(req.ProductDetails);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return StatusCode(200, result);
+        }
+
 
         [HttpPost()]
         [Route("api/product/search")]

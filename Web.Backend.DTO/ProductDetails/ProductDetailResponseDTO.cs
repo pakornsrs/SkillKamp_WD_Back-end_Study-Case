@@ -7,20 +7,13 @@ using System.Threading.Tasks;
 
 namespace Web.Backend.DTO.ProductDetails
 {
-    public class ProductDetailDTO
+    public class ProductDetailResponseDTO
     {
-        [JsonIgnore]
         public int? Id { get; set; } = null;
-
-        [JsonIgnore]
-        public int? InventoryId { get; set; } = null;
-        public int? ProductId { get; set; } = null;
         public decimal? Price { get; set; }
         public bool? IsActive { get; set; }
-        public int? SizeId { get; set; } = null;
-        public int? ColorId { get; set; } = null;
-        public int Quantity { get; set; }
+        public int? SizeId { get; set; }
+        public int? ColorId { get; set; }
         public string? ImagePath { get; set; }
-
     }
 }

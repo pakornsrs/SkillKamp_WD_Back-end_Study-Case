@@ -10,6 +10,7 @@ namespace Web.Backend.BLL.IServices
 {
     public interface IProductDetailService
     {
-        public ServiceResponseModel<ProductDetailDTO> CreateProductDetail(ProductDetailDTO req);
+        public ServiceResponseModel<List<ProductDetailDTO>> CreateProductDetail(List<ProductDetailDTO> req);
+        public ServiceResponseModel<DefaultResponseModel> AddAditionalDetail(List<ProductDetailDTO> req);
     }
 }
