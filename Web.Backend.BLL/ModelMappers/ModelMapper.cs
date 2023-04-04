@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Web.Backend.DAL.Entities;
 using Web.Backend.DTO;
 using Web.Backend.DTO.Addresses;
+using Web.Backend.DTO.Campeigns;
 using Web.Backend.DTO.Cards;
 using Web.Backend.DTO.Inventories;
 using Web.Backend.DTO.ProductColors;
@@ -36,6 +37,7 @@ namespace Web.Backend.BLL.ModelMappers
             CreateMap<UserToken, UserTokenDTO>();
             CreateMap<User, UserLoginDTO>();
             CreateMap<UserCard, CardResponseDTO>();
+            CreateMap<DiscountCampeign, CampeignsDTO>();
 
             CreateMap<UserDTO, User>();
             CreateMap<RoleDTO, Role>();
@@ -51,6 +53,7 @@ namespace Web.Backend.BLL.ModelMappers
             CreateMap<UserTokenDTO, UserToken>();
             CreateMap<UserLoginDTO, User>();
             CreateMap<CardResponseDTO, UserCard>();
+            CreateMap<CampeignsDTO, DiscountCampeign>();
         }
     }
 }

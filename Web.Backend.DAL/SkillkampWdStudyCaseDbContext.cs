@@ -106,7 +106,6 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
             entity.ToTable("DISCOUNT_CAMPEIGN");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreateBy).HasMaxLength(50);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.DescEn).HasMaxLength(255);

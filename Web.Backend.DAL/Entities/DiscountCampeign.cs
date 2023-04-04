@@ -21,6 +21,8 @@ public partial class DiscountCampeign
 
     public DateTime? EndDate { get; set; }
 
+    public bool? IsActive { get; set; }
+
     public DateTime? CreateDate { get; set; }
 
     public DateTime? UpdateDate { get; set; }
