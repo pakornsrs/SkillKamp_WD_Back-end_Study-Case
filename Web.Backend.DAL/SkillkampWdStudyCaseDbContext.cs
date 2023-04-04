@@ -85,7 +85,6 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
             entity.ToTable("CART_ITEM");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreateBy).HasMaxLength(50);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.UpdateBy).HasMaxLength(50);
@@ -331,7 +330,6 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
             entity.ToTable("PURCHASE_SESSION");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreateBy).HasMaxLength(50);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Expire).HasColumnType("datetime");
@@ -350,7 +348,6 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
             entity.ToTable("PURCHASED_ORDER");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Amount).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.CreateDate).HasMaxLength(50);
             entity.Property(e => e.DiscountAmount).HasColumnType("decimal(18, 0)");

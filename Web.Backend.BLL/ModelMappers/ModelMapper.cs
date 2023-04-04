@@ -8,11 +8,13 @@ using Web.Backend.DAL.Entities;
 using Web.Backend.DTO.Addresses;
 using Web.Backend.DTO.Campeigns;
 using Web.Backend.DTO.Cards;
+using Web.Backend.DTO.CartItem;
 using Web.Backend.DTO.Inventories;
 using Web.Backend.DTO.ProductColors;
 using Web.Backend.DTO.ProductDetails;
 using Web.Backend.DTO.Products;
 using Web.Backend.DTO.ProductSizes;
+using Web.Backend.DTO.PurchastSession;
 using Web.Backend.DTO.Roles;
 using Web.Backend.DTO.Users;
 using Web.Backend.DTO.UserTokens;
@@ -38,6 +40,8 @@ namespace Web.Backend.BLL.ModelMappers
             CreateMap<User, UserLoginDTO>();
             CreateMap<UserCard, CardResponseDTO>();
             CreateMap<DiscountCampeign, CampeignsDTO>();
+            CreateMap<PurchaseSession, PurchaseSessionDTO>();
+            CreateMap<CartItem, CartItemDTO>();
 
             CreateMap<UserDTO, User>();
             CreateMap<RoleDTO, Role>();
@@ -54,6 +58,8 @@ namespace Web.Backend.BLL.ModelMappers
             CreateMap<UserLoginDTO, User>();
             CreateMap<CardResponseDTO, UserCard>();
             CreateMap<CampeignsDTO, DiscountCampeign>();
+            CreateMap<PurchaseSessionDTO, PurchaseSession>();
+            CreateMap<CartItemDTO, CartItem>();
         }
     }
 }

@@ -11,6 +11,8 @@ public partial class CartItem
 
     public int? ProductId { get; set; }
 
+    public int? ProductDetailId { get; set; }
+
     public int? Quantity { get; set; }
 
     public DateTime? CreateDate { get; set; }

@@ -29,6 +29,8 @@ builder.Services.AddScoped<IUserTokenService, UserTokenService>();
 builder.Services.AddScoped<IUserCardService, UserCardService>();
 builder.Services.AddScoped<IUserAddressService, UserAddressService>();
 builder.Services.AddScoped<IDiscountCampeignService, DiscountCampeignService>();
+builder.Services.AddScoped<IPurchaseSessionService, PurchaseSessionService>();
+builder.Services.AddScoped<ICartItemService, CartItemService>();
 #endregion
 
 //var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
