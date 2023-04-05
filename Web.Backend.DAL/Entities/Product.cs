@@ -27,6 +27,8 @@ public partial class Product
 
     public int? DiscountId { get; set; }
 
+    public bool? IsActive { get; set; }
+
     public DateTime? CreateDate { get; set; }
 
     public DateTime? UpdateDate { get; set; }

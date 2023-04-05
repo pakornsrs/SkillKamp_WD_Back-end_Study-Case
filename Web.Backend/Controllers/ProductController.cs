@@ -60,7 +60,7 @@ namespace Web.Backend.Controllers
         [Route("api/product/search")]
         public async Task<IActionResult> SearchProduct([FromBody] SearchProductRequestMode req)
         {
-            var result = new ServiceResponseModel<List<ProductDTO>>();
+            var result = new ServiceResponseModel<List<ProductSearchResultDTO>>();
 
             try
             {

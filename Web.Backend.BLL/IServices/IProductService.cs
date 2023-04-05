@@ -13,7 +13,8 @@ namespace Web.Backend.BLL.IServices
     public interface IProductService
     {
         public ServiceResponseModel<DefaultResponseModel> AddNewProduct(AddProductDTO productReq, List<ProductDetailDTO> productDetailReq, List<InventoryDTO> inventoryReq);
-        public ServiceResponseModel<List<ProductDTO>> SerchProductByKeyword(string Keyword);
+        public ServiceResponseModel<List<ProductSearchResultDTO>> SerchProductByKeyword(string Keyword);
+        public ServiceResponseModel<int?> GetAllProductCount();
 
     }
 }
