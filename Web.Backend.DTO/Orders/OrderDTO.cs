@@ -10,7 +10,7 @@ namespace Web.Backend.DTO.Orders
     {
         public int Id { get; set; }
         public int? SessionId { get; set; }
-        public decimal? TotalPrice { get; set; }
+        public decimal? TotalAmount { get; set; }
         public DateTime? CreateDate { get; set; }
 
     }

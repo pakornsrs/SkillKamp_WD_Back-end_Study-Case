@@ -15,5 +15,6 @@ namespace Web.Backend.BLL.IServices
         public ServiceResponseModel<CartItemDTO> ReduceItemQuantityInCart(int cartItemId, int quantity);
         public ServiceResponseModel<DefaultResponseModel> RemoveItemInCart(int cartItemId);
         public ServiceResponseModel<DefaultResponseModel> DeleteCartSession(int purchaseSession);
+        public ServiceResponseModel<List<CartItemDTO>> GetAllCartItem(int sessionId);
     }
 }

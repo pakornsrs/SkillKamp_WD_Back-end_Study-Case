@@ -9,13 +9,23 @@ public partial class DiscountCoupon
 
     public int? UserId { get; set; }
 
+    public string? CouponCode { get; set; }
+
     public int? Type { get; set; }
 
-    public int? Status { get; set; }
+    public decimal? PercentDiscount { get; set; }
+
+    public bool? IsActive { get; set; }
 
     public DateTime? CreateDate { get; set; }
 
     public DateTime? ExpireDate { get; set; }
+
+    public DateTime? UseDate { get; set; }
+
+    public int? UseCount { get; set; }
+
+    public int? Limitation { get; set; }
 
     public DateTime? UpdateDate { get; set; }
 

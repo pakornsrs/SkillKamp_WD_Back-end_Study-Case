@@ -3,7 +3,6 @@ using Web.Backend.BLL.IServices;
 using Web.Backend.BLL.Services;
 using Web.Backend.DTO.Cards;
 using Web.Backend.DTO;
-using Web.Backend.Models.Cards;
 using Web.Backend.Models.Campeigns;
 using Web.Backend.DTO.Campeigns;
 

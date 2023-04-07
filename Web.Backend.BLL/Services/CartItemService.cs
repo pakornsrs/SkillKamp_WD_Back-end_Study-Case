@@ -303,5 +303,35 @@ namespace Web.Backend.BLL.Services
 
             return response;
         }
+
+
+
+        public ServiceResponseModel<List<CartItemDTO>> GetAllCartItem(int sessionId)
+        {
+            var response = new ServiceResponseModel<List<CartItemDTO>>();
+            var list = new List<CartItemDTO>();
+            var tranDateTime = DateTimeUtility.GetDateTimeThai();
+
+            try
+            {
+                var query = (from q in this.dbContext.CartItems
+                             where q.SessionId == sessionId
+                             select q).ToList();
+
+                list = mapper.Map<List<CartItemDTO>>(query);
+
+                response.Item = list;
+
+                response.ErrorCode = "0000";
+                response.ErrorMessage = "Success";
+            }
+            catch (Exception ex)
+            {
+                response.ErrorCode = "BE9999";
+                response.ErrorMessage = "Internal server error.";
+            }
+
+            return response;
+        }
     }
 }

@@ -6,9 +6,9 @@ using Web.Backend.Models.Users;
 using Web.Backend.BLL.IServices;
 using Web.Backend.DTO.Enums;
 using ActionResult = Web.Backend.DTO.Enums.ActionResult;
-using Web.Backend.Models.Cards;
 using Web.Backend.DTO.Cards;
 using Microsoft.AspNetCore.Authorization;
+using Web.Backend.Models;
 
 namespace Web.Backend.Controllers
 {
@@ -40,7 +40,7 @@ namespace Web.Backend.Controllers
 
         [HttpPost()]
         [Route("api/card/get")]
-        public async Task<IActionResult> GetCardByUSerId([FromBody] GetCardRequestModel req)
+        public async Task<IActionResult> GetCardByUSerId([FromBody] UserIdRequestModel req)
         {
             var result = new ServiceResponseModel<List<CardResponseDTO>>();
 

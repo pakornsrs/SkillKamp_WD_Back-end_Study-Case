@@ -9,7 +9,13 @@ public partial class Order
 
     public int? SessionId { get; set; }
 
-    public decimal? TotalPrice { get; set; }
+    public decimal? Amount { get; set; }
+
+    public decimal? TotalAmount { get; set; }
+
+    public string? CartItem { get; set; }
+
+    public int? CouponId { get; set; }
 
     public DateTime? CreateDate { get; set; }
 

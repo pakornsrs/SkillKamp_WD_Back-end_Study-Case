@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Web.Backend.Models.Cards
+namespace Web.Backend.Models
 {
-    public class GetCardRequestModel
+    public class UserIdRequestModel
     {
         public int userId { get; set; }
     }

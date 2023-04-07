@@ -87,6 +87,7 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
             entity.Property(e => e.CreateBy).HasMaxLength(50);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.UpdateBy).HasMaxLength(50);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
 
@@ -126,12 +127,14 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
             entity.ToTable("DISCOUNT_COUPON");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CouponCode).HasMaxLength(10);
             entity.Property(e => e.CreateBy).HasMaxLength(50);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.ExpireDate).HasColumnType("datetime");
+            entity.Property(e => e.PercentDiscount).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.UpdateBy).HasMaxLength(50);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+            entity.Property(e => e.UseDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.User).WithMany(p => p.DiscountCoupons)
                 .HasForeignKey(d => d.UserId)
@@ -157,10 +160,10 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
             entity.ToTable("ORDER");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Amount).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.CreateBy).HasMaxLength(50);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.TotalPrice).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.TotalAmount).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.UpdateBy).HasMaxLength(50);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
 

@@ -13,5 +13,6 @@ namespace Web.Backend.DTO.CartItem
         public int? ProductId { get; set; }
         public int? productDetailId { get; set; }
         public int? Quantity { get; set; }
+        public decimal Price { get; set; }
     }
 }

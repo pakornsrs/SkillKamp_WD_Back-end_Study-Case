@@ -6,6 +6,7 @@ using Web.Backend.DTO;
 using Web.Backend.Models.Campeigns;
 using Web.Backend.Models.CartItems;
 using Web.Backend.DTO.CartItem;
+using Web.Backend.Models;
 
 namespace Web.Backend.Controllers
 {
@@ -73,7 +74,7 @@ namespace Web.Backend.Controllers
 
         [HttpPost()]
         [Route("api/cart/remove")]
-        public async Task<IActionResult> RemoveItemInCart([FromBody] AddOrReduceRequestModel req)
+        public async Task<IActionResult> RemoveItemInCart([FromBody] CartItemIdRequestModel req)
         {
             var result = new ServiceResponseModel<DefaultResponseModel>();
 
@@ -91,13 +92,13 @@ namespace Web.Backend.Controllers
 
         [HttpPost()]
         [Route("api/cart/delete/all")]
-        public async Task<IActionResult> DeleteCartSession([FromBody] DeleteCartRequestModel req)
+        public async Task<IActionResult> DeleteCartSession([FromBody] PurchaseSessionIdRequestModel req)
         {
             var result = new ServiceResponseModel<DefaultResponseModel>();
 
             try
             {
-                result = cartItemService.DeleteCartSession(req.purchaseSessionId);
+                result = cartItemService.DeleteCartSession(req.PurchaseSessionId);
             }
             catch (Exception ex)
             {
