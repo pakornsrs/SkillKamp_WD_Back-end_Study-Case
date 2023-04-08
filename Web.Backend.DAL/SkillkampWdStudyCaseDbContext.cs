@@ -40,6 +40,8 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
     public virtual DbSet<ProductInventory> ProductInventories { get; set; }
 
+    public virtual DbSet<ProductRating> ProductRatings { get; set; }
+
     public virtual DbSet<ProductReview> ProductReviews { get; set; }
 
     public virtual DbSet<ProductSize> ProductSizes { get; set; }
@@ -288,6 +290,16 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.UpdateBy).HasMaxLength(50);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<ProductRating>(entity =>
+        {
+            entity.ToTable("PRODUCT_RATING");
+
+            entity.Property(e => e.CreateBy).HasMaxLength(20);
+            entity.Property(e => e.CreateDate).HasColumnType("date");
+            entity.Property(e => e.UpdateBy).HasMaxLength(20);
+            entity.Property(e => e.UpdateDate).HasColumnType("date");
         });
 
         modelBuilder.Entity<ProductReview>(entity =>

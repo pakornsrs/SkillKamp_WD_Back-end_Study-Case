@@ -27,6 +27,8 @@ namespace Web.Backend.BLL.Services
         private readonly IProductDetailService productDetailService;
         private readonly IProductSizeService productSizeService;
         private readonly IProductColorService productColorService;
+        private readonly IProductReviewService productReviewService;
+        private readonly IProductRatingService productRatingService;
 
         private IMapper mapper = new MapperConfiguration(cfg => cfg.AddProfile<ModelMapper>()).CreateMapper();
 
@@ -34,13 +36,17 @@ namespace Web.Backend.BLL.Services
                               IInventoryService inventoryService,
                               IProductDetailService productDetailService,
                               IProductSizeService productSizeService,
-                              IProductColorService productColorService)
+                              IProductColorService productColorService,
+                              IProductReviewService productReviewService,
+                              IProductRatingService productRatingService)
         {
             this.dbContext = dbContext;
             this.inventoryService = inventoryService;
             this.productDetailService = productDetailService;
             this.productSizeService = productSizeService;
             this.productColorService = productColorService;
+            this.productReviewService = productReviewService;
+            this.productRatingService = productRatingService;
         }
 
         public ServiceResponseModel<DefaultResponseModel> AddNewProduct(AddProductDTO productReq,List<ProductDetailDTO> productDetailReq,List<InventoryDTO> inventoryReq)
@@ -201,7 +207,7 @@ namespace Web.Backend.BLL.Services
                                         DiscountDescTh = discount.DescTh,
                                         DiscountDescEn = discount.DescEn,
                                         DiscountPercent = discount.DisconutPercent,
-                                        IsMultiDetail = product.IsMultiDetail
+                                        IsMultiDetail = product.IsMultiDetail,
                                     })
                                     .GroupBy(obj => obj.ProductId)
                                     .Select(obj => obj.First())
@@ -214,6 +220,18 @@ namespace Web.Backend.BLL.Services
 
                     multiDetailProducIds.Add(item.ProductId);
                 }
+
+                // Query rating
+
+                var productIds = productQuery.Select(item => item.ProductId).ToList();
+
+                var ratingResponse = productRatingService.GetProductRating(productIds);
+                var ratings = ratingResponse.Item;
+
+                // Query review count
+
+                var reviewsResponse = productReviewService.GetReviewCount(productIds);
+                var reviews = reviewsResponse.Item;
 
                 // Query product detail
 
@@ -249,6 +267,12 @@ namespace Web.Backend.BLL.Services
 
                 foreach(var product in productQuery)
                 {
+                    var reviewCount = reviews.Where(review => review.ProductId == product.ProductId).FirstOrDefault();
+                    product.ReviewCount = reviewCount.ReviewCount;
+
+                    var rating = ratings.Where(rate => rate.ProductId == product.ProductId).FirstOrDefault();
+                    product.Rating = rating.Rating.Value;
+
                     if (!product.IsMultiDetail.Value) continue;
 
                     var details = productDetail.Where(item => item.ProductId == product.ProductId).ToList();

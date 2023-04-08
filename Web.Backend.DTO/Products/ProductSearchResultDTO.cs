@@ -17,6 +17,8 @@ namespace Web.Backend.DTO.Products
         public string? ProductNameEn { get; set; }
         public string? ProductDescTh { get; set; }
         public string? ProductDescEn { get; set; }
+        public int Rating { get; set; }
+        public int ReviewCount { get; set; }
         public bool? CanUseDiscountCode { get; set; } = true;
         public bool? IsDiscount { get; set; } = false;
         public int? DiscountId { get; set; }

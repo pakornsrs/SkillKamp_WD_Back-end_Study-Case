@@ -14,6 +14,8 @@ using Web.Backend.DTO.Inventories;
 using Web.Backend.DTO.Orders;
 using Web.Backend.DTO.ProductColors;
 using Web.Backend.DTO.ProductDetails;
+using Web.Backend.DTO.ProductRating;
+using Web.Backend.DTO.ProductReview;
 using Web.Backend.DTO.Products;
 using Web.Backend.DTO.ProductSizes;
 using Web.Backend.DTO.PurchastSession;
@@ -46,6 +48,8 @@ namespace Web.Backend.BLL.ModelMappers
             CreateMap<CartItem, CartItemDTO>();
             CreateMap<Order, OrderDTO>();
             CreateMap<DiscountCoupon, DiscountCouponDTO>();
+            CreateMap<ProductRating, ProductRatingDTO>();
+            CreateMap<ProductReview, ProductReviewDTO>();
 
             CreateMap<UserDTO, User>();
             CreateMap<RoleDTO, Role>();
@@ -66,6 +70,8 @@ namespace Web.Backend.BLL.ModelMappers
             CreateMap<CartItemDTO, CartItem>();
             CreateMap<OrderDTO, Order>();
             CreateMap<DiscountCouponDTO, DiscountCoupon>();
+            CreateMap<ProductRatingDTO, ProductRating>();
+            CreateMap<ProductReviewDTO, ProductReview>();
         }
     }
 }
