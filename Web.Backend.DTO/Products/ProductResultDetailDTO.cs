@@ -19,5 +19,6 @@ namespace Web.Backend.DTO.Products
         public string ColorDescEn { get; set; }
         public int? InvertoryId { get; set; }
         public int? Quantity { get; set; }
+        public string ColorCode { get; set; }
     }
 }

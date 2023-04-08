@@ -15,6 +15,8 @@ namespace Web.Backend.BLL.IServices
         public ServiceResponseModel<DefaultResponseModel> AddNewProduct(AddProductDTO productReq, List<ProductDetailDTO> productDetailReq, List<InventoryDTO> inventoryReq);
         public ServiceResponseModel<List<ProductSearchResultDTO>> SerchProductByKeyword(string Keyword);
         public ServiceResponseModel<int?> GetAllProductCount();
+        public ServiceResponseModel<List<ProductSearchResultDTO>> GetNewArrival();
+
 
     }
 }

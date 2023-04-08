@@ -15,6 +15,8 @@ using Web.Backend.DAL.Entities;
 using Web.Backend.DTO;
 using Web.Backend.DTO.Inventories;
 using Web.Backend.DTO.ProductDetails;
+using Web.Backend.DTO.ProductRating;
+using Web.Backend.DTO.ProductReview;
 using Web.Backend.DTO.Products;
 using Web.Backend.DTO.Users;
 
@@ -214,76 +216,30 @@ namespace Web.Backend.BLL.Services
                                     .ToList();
 
                 var multiDetailProducIds = new List<int>();
-                foreach(var item in productQuery)
+                var productIds = new List<int>();
+
+                foreach (var item in productQuery)
                 {
+                    productIds.Add(item.ProductId);
+
                     if (!item.IsMultiDetail.Value) continue;
 
                     multiDetailProducIds.Add(item.ProductId);
                 }
 
                 // Query rating
-
-                var productIds = productQuery.Select(item => item.ProductId).ToList();
-
-                var ratingResponse = productRatingService.GetProductRating(productIds);
-                var ratings = ratingResponse.Item;
+                var ratings = GetRating(productIds);
 
                 // Query review count
-
-                var reviewsResponse = productReviewService.GetReviewCount(productIds);
-                var reviews = reviewsResponse.Item;
+                var reviews = GetReviewCount(productIds);
 
                 // Query product detail
-
-                var productDetail = new List<ProductResultDetailDTO>();
-
-                if (multiDetailProducIds.Count > 0)
-                {
-                    var detailQuery = (from detail in this.dbContext.ProductDetails
-                                       where multiDetailProducIds.Contains(detail.ProductId.Value)
-                                       join inventory in this.dbContext.ProductInventories on detail.InventoryId equals inventory.Id
-                                       join color in this.dbContext.ProductColors on detail.ColorId equals color.Id
-                                       join size in this.dbContext.ProductSizes on detail.SizeId equals size.Id
-                                       select new ProductResultDetailDTO
-                                       {
-                                           ProductId = detail.ProductId,
-                                           ProductDetailId = detail.Id,
-                                           Price = detail.Price,
-                                           SizeId = detail.SizeId,
-                                           SizeDescTh = size.SizeDescTh,
-                                           SizeDescEn = size.SizeDescEn,
-                                           ColorId = detail.ColorId,
-                                           ColorDescTh = color.ColorNameTh,
-                                           ColorDescEn = color.ColorNameTh,
-                                           InvertoryId = inventory.Id,
-                                           Quantity = inventory.Quantity
-                                           
-                                       }).ToList();
-
-                    productDetail = detailQuery.GroupBy(obj => obj.ProductDetailId).Select(obj => obj.First()).ToList();
-                }
+                var productDetail = GetProductDetails(multiDetailProducIds);
 
                 // response model merge
+                var productSearchResponse = GetResponseSearchResult(productQuery, ratings, reviews, productDetail);
 
-                foreach(var product in productQuery)
-                {
-                    var reviewCount = reviews.Where(review => review.ProductId == product.ProductId).FirstOrDefault();
-                    product.ReviewCount = reviewCount.ReviewCount;
-
-                    var rating = ratings.Where(rate => rate.ProductId == product.ProductId).FirstOrDefault();
-                    product.Rating = rating.Rating.Value;
-
-                    if (!product.IsMultiDetail.Value) continue;
-
-                    var details = productDetail.Where(item => item.ProductId == product.ProductId).ToList();
-
-                    foreach(var detail in details)
-                    {
-                        product.SepcificDetail.Add(detail);
-                    }
-                }
-
-                response.Item = productQuery;
+                response.Item = productSearchResponse;
 
                 response.ErrorCode = "0000";
                 response.ErrorMessage = "Success";
@@ -296,8 +252,82 @@ namespace Web.Backend.BLL.Services
 
             return response;
         }
+        public ServiceResponseModel<List<ProductSearchResultDTO>> GetNewArrival()
+        {
+            var response = new ServiceResponseModel<List<ProductSearchResultDTO>>();
 
+            try
+            {
 
+                var productQuery = (from product in this.dbContext.Products
+                                    join discount in this.dbContext.DiscountCampeigns on product.DiscountId equals discount.Id
+                                    join category in this.dbContext.ProductCategories on product.CategoryId equals category.Id
+                                    join detail in this.dbContext.ProductDetails on product.ProductDefaultDetailId equals detail.Id
+                                    orderby product.CreateDate descending
+                                    select new ProductSearchResultDTO
+                                    {
+                                        ProductId = product.Id,
+                                        CategoryId = product.CategoryId,
+                                        CategoryDescTh = category.DescTh,
+                                        CategoryDescEn = category.DescEn,
+                                        ProductDefaultDetailId = product.ProductDefaultDetailId,
+                                        ProductNameTh = product.ProductNameTh,
+                                        ProductNameEn = product.ProductNameEn,
+                                        ProductDescTh = product.DescTh,
+                                        ProductDescEn = product.DescEn,
+                                        CanUseDiscountCode = product.CanUseDiscountCode,
+                                        IsDiscount = product.IsDiscount,
+                                        DiscountId = discount.Id,
+                                        DiscountDescTh = discount.DescTh,
+                                        DiscountDescEn = discount.DescEn,
+                                        DiscountPercent = discount.DisconutPercent,
+                                        IsMultiDetail = product.IsMultiDetail,
+                                        PriceStart = detail.Price.Value,
+                                        DefaultImgPaht = detail.ImagePath,
+                                        Created = product.CreateDate
+                                    })
+                                    //.GroupBy(obj => obj.ProductId)
+                                    //.Select(obj => obj.First())
+                                    .Take(5)
+                                    .ToList();
+
+                var multiDetailProducIds = new List<int>();
+                var productIds = new List<int>();
+
+                foreach (var item in productQuery)
+                {
+                    productIds.Add(item.ProductId);
+
+                    if (!item.IsMultiDetail.Value) continue;
+
+                    multiDetailProducIds.Add(item.ProductId);
+                }
+
+                // Query rating
+                var ratings = GetRating(productIds);
+
+                // Query review count
+                var reviews = GetReviewCount(productIds);
+
+                // Query product detail
+                var productDetail = GetProductDetails(multiDetailProducIds);
+
+                // response model merge
+                var productSearchResponse = GetResponseSearchResult(productQuery, ratings, reviews, productDetail);
+
+                response.Item = productSearchResponse;
+
+                response.ErrorCode = "0000";
+                response.ErrorMessage = "Success";
+            }
+            catch (Exception ex)
+            {
+                response.ErrorCode = "BE9999";
+                response.ErrorMessage = "Internal server error.";
+            }
+
+            return response;
+        }
         public ServiceResponseModel<int?> GetAllProductCount()
         {
             var response = new ServiceResponseModel<int?>();
@@ -323,6 +353,101 @@ namespace Web.Backend.BLL.Services
             }
 
             return response;
+        }
+
+
+        private List<ProductRatingDTO> GetRating (List<int> productIds)
+        {
+            try
+            {
+                var ratingResponse = productRatingService.GetProductRating(productIds);
+                var ratings = ratingResponse.Item;
+
+                return ratings;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        private List<ProductReviewCountDTO> GetReviewCount(List<int> productIds)
+        {
+            try
+            {
+                var reviewsResponse = productReviewService.GetReviewCount(productIds);
+                var reviews = reviewsResponse.Item;
+
+                return reviews;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        private List<ProductResultDetailDTO> GetProductDetails(List<int> multiDetailProducIds)
+        {
+            try
+            {
+                var productDetail = new List<ProductResultDetailDTO>();
+
+                if (multiDetailProducIds.Count > 0)
+                {
+                    var detailQuery = (from detail in this.dbContext.ProductDetails
+                                       where multiDetailProducIds.Contains(detail.ProductId.Value)
+                                       join color in this.dbContext.ProductColors on detail.ColorId equals color.Id
+                                       select new ProductResultDetailDTO
+                                       {
+                                           ProductId = detail.ProductId,
+                                           ProductDetailId = detail.Id,
+                                           ColorId = detail.ColorId,
+                                           ColorDescTh = color.ColorNameTh,
+                                           ColorDescEn = color.ColorNameTh,
+                                           ColorCode = color.ColorCode,
+
+                                       })
+                                       .GroupBy(obj => obj.ColorId)
+                                       .Select(obj => obj.First())
+                                       .ToList();
+
+                    productDetail = detailQuery.GroupBy(obj => obj.ProductDetailId).Select(obj => obj.First()).ToList();
+                }
+
+                return productDetail;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        private List<ProductSearchResultDTO> GetResponseSearchResult(List<ProductSearchResultDTO> productQuery, List<ProductRatingDTO> ratings, List<ProductReviewCountDTO> reviews, List<ProductResultDetailDTO> productDetail)
+        {
+            try
+            {
+                foreach (var product in productQuery)
+                {
+                    var reviewCount = reviews.Where(review => review.ProductId == product.ProductId).FirstOrDefault();
+                    product.ReviewCount = reviewCount.ReviewCount;
+
+                    var rating = ratings.Where(rate => rate.ProductId == product.ProductId).FirstOrDefault();
+                    product.Rating = rating.Rating.Value;
+
+                    if (!product.IsMultiDetail.Value) continue;
+
+                    var details = productDetail.Where(item => item.ProductId == product.ProductId).ToList();
+
+                    foreach (var detail in details)
+                    {
+                        product.SepcificDetail.Add(detail);
+                    }
+                }
+
+                return productQuery;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
     }
 }

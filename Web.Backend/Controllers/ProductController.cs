@@ -73,5 +73,23 @@ namespace Web.Backend.Controllers
 
             return StatusCode(200, result);
         }
+
+        [HttpGet()]
+        [Route("api/product/new")]
+        public async Task<IActionResult> NewArrivalProd()
+        {
+            var result = new ServiceResponseModel<List<ProductSearchResultDTO>>();
+
+            try
+            {
+                result = productService.GetNewArrival();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return StatusCode(200, result);
+        }
     }
 }

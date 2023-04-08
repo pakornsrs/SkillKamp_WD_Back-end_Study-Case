@@ -9,7 +9,7 @@ public partial class ProductRating
 
     public int? ProductId { get; set; }
 
-    public int? Rating { get; set; }
+    public decimal? Rating { get; set; }
 
     public DateTime? CreateDate { get; set; }
 

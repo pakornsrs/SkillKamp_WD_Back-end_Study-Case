@@ -298,6 +298,7 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
             entity.Property(e => e.CreateBy).HasMaxLength(20);
             entity.Property(e => e.CreateDate).HasColumnType("date");
+            entity.Property(e => e.Rating).HasColumnType("numeric(18, 0)");
             entity.Property(e => e.UpdateBy).HasMaxLength(20);
             entity.Property(e => e.UpdateDate).HasColumnType("date");
         });

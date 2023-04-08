@@ -17,7 +17,7 @@ namespace Web.Backend.DTO.Products
         public string? ProductNameEn { get; set; }
         public string? ProductDescTh { get; set; }
         public string? ProductDescEn { get; set; }
-        public int Rating { get; set; }
+        public decimal Rating { get; set; }
         public int ReviewCount { get; set; }
         public bool? CanUseDiscountCode { get; set; } = true;
         public bool? IsDiscount { get; set; } = false;
@@ -26,6 +26,9 @@ namespace Web.Backend.DTO.Products
         public string DiscountDescEn { get; set; }
         public decimal? DiscountPercent { get; set; }
         public bool? IsMultiDetail { get; set; }
+        public decimal PriceStart { get; set; }
+        public string DefaultImgPaht { get; set; }
+        public DateTime? Created { get; set; }
         public int ProductTypeCount => IsMultiDetail == false ? 1 : SepcificDetail.Count();
 
         public List<ProductResultDetailDTO> SepcificDetail { get; set; } = new List<ProductResultDetailDTO>();
