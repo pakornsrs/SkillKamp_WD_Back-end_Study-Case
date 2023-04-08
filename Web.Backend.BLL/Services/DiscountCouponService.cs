@@ -231,6 +231,15 @@ namespace Web.Backend.BLL.Services
                 response.ErrorCode = "BE9999";
                 response.ErrorMessage = "Internal server error.";
             }
+
+            return response;
+        }
+
+
+
+        private string GenerateCouponNumber()
+        {
+            return "Test";
         }
     }
 }
