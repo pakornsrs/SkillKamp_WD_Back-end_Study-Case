@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -399,19 +400,22 @@ namespace Web.Backend.BLL.Services
 
                     // Query product detail
                     List<ProductResultDetailDTO> productDetail = new List<ProductResultDetailDTO>();
+                    List<ProductResultDetailDTO> productDetailSize = new List<ProductResultDetailDTO>();
+                    List<ProductResultDetailDTO> productDetailColor = new List<ProductResultDetailDTO>();
 
                     if (productQuery[0].IsMultiDetail.Value)
                     {
                         var multiDetailProducIds = new List<int> { productId };
-                        productDetail = GetProductFullDetails(multiDetailProducIds);
+                        productDetail = GetProductFullDetails(multiDetailProducIds, "all");
+                        productDetailSize = GetProductFullDetails(multiDetailProducIds, "size");
+                        productDetailColor = GetProductFullDetails(multiDetailProducIds, "color");
                     }
-
-                    var colorIds = new List<int>();
-
-                    var test = productDetail.Select(obj => obj.ColorId).ToList();
 
                     // full response model merge
                     var productSearchResponse = GetResponseSearchResult(productQuery, ratings, reviews, productDetail);
+
+                    productSearchResponse[0].DetailByColor = productDetailColor;
+                    productSearchResponse[0].DetailBySize = productDetailSize;
 
                     response.Item = productSearchResponse.FirstOrDefault();
 
@@ -492,13 +496,13 @@ namespace Web.Backend.BLL.Services
                 throw;
             }
         }
-        private List<ProductResultDetailDTO> GetProductFullDetails(List<int> multiDetailProducIds)
+        private List<ProductResultDetailDTO> GetProductFullDetails(List<int> multiDetailProducIds, string GetBy = "size")
         {
             try
             {
                 var productDetail = new List<ProductResultDetailDTO>();
 
-                if (multiDetailProducIds.Count > 0)
+                if (multiDetailProducIds.Count > 0 && GetBy == "size")
                 {
                     var detailQuery = (from detail in this.dbContext.ProductDetails
                                        where multiDetailProducIds.Contains(detail.ProductId.Value)
@@ -511,18 +515,82 @@ namespace Web.Backend.BLL.Services
                                            ProductDetailId = detail.Id,
                                            ColorId = detail.ColorId,
                                            ColorDescTh = color.ColorNameTh,
-                                           ColorDescEn = color.ColorNameTh,
+                                           ColorDescEn = color.ColorNameEn,
                                            ColorCode = color.ColorCode,
                                            Price = detail.Price,
                                            SizeId = size.Id,
                                            SizeDescTh = size.SizeDescTh,
                                            SizeDescEn = size.SizeDescEn,
                                            InvertoryId = inventory.Id,
-                                           Quantity = inventory.Quantity
+                                           Quantity = inventory.Quantity,
+                                           ImgPath = detail.ImagePath
 
-                                       }).ToList();
+                                       })
+                                       .GroupBy(obj => obj.SizeId)
+                                       .Select(obj => obj.First())
+                                       .ToList();
 
                     productDetail = detailQuery.GroupBy(obj => obj.ProductDetailId).Select(obj => obj.First()).ToList();
+                }
+                else if (multiDetailProducIds.Count > 0 && GetBy == "color")
+                {
+                    var detailQuery = (from detail in this.dbContext.ProductDetails
+                                       where multiDetailProducIds.Contains(detail.ProductId.Value)
+                                       join size in this.dbContext.ProductSizes on detail.SizeId equals size.Id
+                                       join color in this.dbContext.ProductColors on detail.ColorId equals color.Id
+                                       join inventory in this.dbContext.ProductInventories on detail.InventoryId equals inventory.Id
+                                       select new ProductResultDetailDTO
+                                       {
+                                           ProductId = detail.ProductId,
+                                           ProductDetailId = detail.Id,
+                                           ColorId = detail.ColorId,
+                                           ColorDescTh = color.ColorNameTh,
+                                           ColorDescEn = color.ColorNameEn,
+                                           ColorCode = color.ColorCode,
+                                           Price = detail.Price,
+                                           SizeId = size.Id,
+                                           SizeDescTh = size.SizeDescTh,
+                                           SizeDescEn = size.SizeDescEn,
+                                           InvertoryId = inventory.Id,
+                                           Quantity = inventory.Quantity,
+                                           ImgPath = detail.ImagePath
+
+                                       })
+                                       .GroupBy(obj => obj.ColorId)
+                                       .Select(obj => obj.First())
+                                       .ToList();
+
+                    productDetail = detailQuery.GroupBy(obj => obj.ProductDetailId).Select(obj => obj.First()).ToList();
+                }
+                else
+                {
+                    var detailQuery = (from detail in this.dbContext.ProductDetails
+                                       where multiDetailProducIds.Contains(detail.ProductId.Value)
+                                       join size in this.dbContext.ProductSizes on detail.SizeId equals size.Id
+                                       join color in this.dbContext.ProductColors on detail.ColorId equals color.Id
+                                       join inventory in this.dbContext.ProductInventories on detail.InventoryId equals inventory.Id
+                                       select new ProductResultDetailDTO
+                                       {
+                                           ProductId = detail.ProductId,
+                                           ProductDetailId = detail.Id,
+                                           ColorId = detail.ColorId,
+                                           ColorDescTh = color.ColorNameTh,
+                                           ColorDescEn = color.ColorNameEn,
+                                           ColorCode = color.ColorCode,
+                                           Price = detail.Price,
+                                           SizeId = size.Id,
+                                           SizeDescTh = size.SizeDescTh,
+                                           SizeDescEn = size.SizeDescEn,
+                                           InvertoryId = inventory.Id,
+                                           Quantity = inventory.Quantity,
+                                           ImgPath = detail.ImagePath
+
+                                       })
+                                       .GroupBy(obj => obj.ProductDetailId)
+                                       .Select(obj => obj.First())
+                                       .ToList();
+
+                    productDetail = detailQuery;
                 }
 
                 return productDetail;
@@ -533,7 +601,7 @@ namespace Web.Backend.BLL.Services
             }
         }
 
-        private List<ProductSearchResultDTO> GetResponseSearchResult(List<ProductSearchResultDTO> productQuery, List<ProductRatingDTO> ratings, List<ProductReviewCountDTO> reviews, List<ProductResultDetailDTO> productDetail)
+        private List<ProductSearchResultDTO> GetResponseSearchResult(List<ProductSearchResultDTO> productQuery, List<ProductRatingDTO> ratings, List<ProductReviewCountDTO> reviews, List<ProductResultDetailDTO> productDetail = null)
         {
             try
             {
@@ -547,11 +615,14 @@ namespace Web.Backend.BLL.Services
 
                     if (!product.IsMultiDetail.Value) continue;
 
-                    var details = productDetail.Where(item => item.ProductId == product.ProductId).ToList();
-
-                    foreach (var detail in details)
+                    if (productDetail != null)
                     {
-                        product.SepcificDetail.Add(detail);
+                        var details = productDetail.Where(item => item.ProductId == product.ProductId).ToList();
+
+                        foreach (var detail in details)
+                        {
+                            product.SepcificDetail.Add(detail);
+                        }
                     }
                 }
 

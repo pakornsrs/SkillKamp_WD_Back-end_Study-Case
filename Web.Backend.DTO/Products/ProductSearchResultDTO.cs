@@ -32,6 +32,8 @@ namespace Web.Backend.DTO.Products
         public int ProductTypeCount => IsMultiDetail == false ? 1 : SepcificDetail.Count();
 
         public List<ProductResultDetailDTO> SepcificDetail { get; set; } = new List<ProductResultDetailDTO>();
+        public List<ProductResultDetailDTO> DetailBySize { get; set; } = new List<ProductResultDetailDTO>();
+        public List<ProductResultDetailDTO> DetailByColor { get; set; } = new List<ProductResultDetailDTO>();
 
     }
 }
