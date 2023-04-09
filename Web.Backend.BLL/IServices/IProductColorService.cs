@@ -11,6 +11,6 @@ namespace Web.Backend.BLL.IServices
     public interface IProductColorService
     {
         public ServiceResponseModel<List<ProductColorDTO>> GetAllProductColor();
-        public ServiceResponseModel<ProductColorDTO> GetProductSizeById(int colorId);
+        public ServiceResponseModel<List<ProductColorDTO>> GetProductSizeByIds(List<int> colorId);
     }
 }

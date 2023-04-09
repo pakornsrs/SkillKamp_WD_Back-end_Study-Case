@@ -354,6 +354,79 @@ namespace Web.Backend.BLL.Services
 
             return response;
         }
+        public ServiceResponseModel<ProductSearchResultDTO> GetProductFullDetail(int productId)
+        {
+            var response = new ServiceResponseModel<ProductSearchResultDTO>();
+            var tranDateTime = DateTimeUtility.GetDateTimeThai();
+
+            using (IDbContextTransaction transaction = this.dbContext.Database.BeginTransaction())
+            {
+                try
+                {
+                    var productQuery = (from product in this.dbContext.Products
+                                        where product.Id == productId
+                                        join discount in this.dbContext.DiscountCampeigns on product.DiscountId equals discount.Id
+                                        join category in this.dbContext.ProductCategories on product.CategoryId equals category.Id
+                                        select new ProductSearchResultDTO
+                                        {
+                                            ProductId = product.Id,
+                                            CategoryId = product.CategoryId,
+                                            CategoryDescTh = category.DescTh,
+                                            CategoryDescEn = category.DescEn,
+                                            ProductDefaultDetailId = product.ProductDefaultDetailId,
+                                            ProductNameTh = product.ProductNameTh,
+                                            ProductNameEn = product.ProductNameEn,
+                                            ProductDescTh = product.DescTh,
+                                            ProductDescEn = product.DescEn,
+                                            CanUseDiscountCode = product.CanUseDiscountCode,
+                                            IsDiscount = product.IsDiscount,
+                                            DiscountId = discount.Id,
+                                            DiscountDescTh = discount.DescTh,
+                                            DiscountDescEn = discount.DescEn,
+                                            DiscountPercent = discount.DisconutPercent,
+                                            IsMultiDetail = product.IsMultiDetail,
+                                        })
+                                    .GroupBy(obj => obj.ProductId)
+                                    .Select(obj => obj.First())
+                                    .ToList();
+
+                    // Query rating
+                    var productIds = new List<int> { productId };
+                    var ratings = GetRating(productIds);
+
+                    // Query review count
+                    var reviews = GetReviewCount(productIds);
+
+                    // Query product detail
+                    List<ProductResultDetailDTO> productDetail = new List<ProductResultDetailDTO>();
+
+                    if (productQuery[0].IsMultiDetail.Value)
+                    {
+                        var multiDetailProducIds = new List<int> { productId };
+                        productDetail = GetProductFullDetails(multiDetailProducIds);
+                    }
+
+                    var colorIds = new List<int>();
+
+                    var test = productDetail.Select(obj => obj.ColorId).ToList();
+
+                    // full response model merge
+                    var productSearchResponse = GetResponseSearchResult(productQuery, ratings, reviews, productDetail);
+
+                    response.Item = productSearchResponse.FirstOrDefault();
+
+                    response.ErrorCode = "0000";
+                    response.ErrorMessage = "Success";
+                }
+                catch (Exception ex)
+                {
+                    response.ErrorCode = "BE9999";
+                    response.ErrorMessage = "Internal server error.";
+                }
+
+                return response;
+            }
+        }
 
 
         private List<ProductRatingDTO> GetRating (List<int> productIds)
@@ -419,6 +492,47 @@ namespace Web.Backend.BLL.Services
                 throw;
             }
         }
+        private List<ProductResultDetailDTO> GetProductFullDetails(List<int> multiDetailProducIds)
+        {
+            try
+            {
+                var productDetail = new List<ProductResultDetailDTO>();
+
+                if (multiDetailProducIds.Count > 0)
+                {
+                    var detailQuery = (from detail in this.dbContext.ProductDetails
+                                       where multiDetailProducIds.Contains(detail.ProductId.Value)
+                                       join color in this.dbContext.ProductColors on detail.ColorId equals color.Id
+                                       join size in this.dbContext.ProductSizes on detail.SizeId equals size.Id
+                                       join inventory in this.dbContext.ProductInventories on detail.InventoryId equals inventory.Id
+                                       select new ProductResultDetailDTO
+                                       {
+                                           ProductId = detail.ProductId,
+                                           ProductDetailId = detail.Id,
+                                           ColorId = detail.ColorId,
+                                           ColorDescTh = color.ColorNameTh,
+                                           ColorDescEn = color.ColorNameTh,
+                                           ColorCode = color.ColorCode,
+                                           Price = detail.Price,
+                                           SizeId = size.Id,
+                                           SizeDescTh = size.SizeDescTh,
+                                           SizeDescEn = size.SizeDescEn,
+                                           InvertoryId = inventory.Id,
+                                           Quantity = inventory.Quantity
+
+                                       }).ToList();
+
+                    productDetail = detailQuery.GroupBy(obj => obj.ProductDetailId).Select(obj => obj.First()).ToList();
+                }
+
+                return productDetail;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         private List<ProductSearchResultDTO> GetResponseSearchResult(List<ProductSearchResultDTO> productQuery, List<ProductRatingDTO> ratings, List<ProductReviewCountDTO> reviews, List<ProductResultDetailDTO> productDetail)
         {
             try
@@ -445,7 +559,6 @@ namespace Web.Backend.BLL.Services
             }
             catch (Exception ex)
             {
-
                 throw;
             }
         }

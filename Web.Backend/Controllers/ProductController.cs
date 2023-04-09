@@ -5,6 +5,7 @@ using Web.Backend.DTO;
 using Web.Backend.Models.Users;
 using Web.Backend.Models.Products;
 using Web.Backend.DTO.Products;
+using Web.Backend.Models;
 
 namespace Web.Backend.Controllers
 {
@@ -83,6 +84,24 @@ namespace Web.Backend.Controllers
             try
             {
                 result = productService.GetNewArrival();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return StatusCode(200, result);
+        }
+
+        [HttpPost()]
+        [Route("api/product/detail/get")]
+        public async Task<IActionResult> GetProductDetail([FromBody] ProductIdRequestModel req)
+        {
+            var result = new ServiceResponseModel<ProductSearchResultDTO>();
+
+            try
+            { 
+                result = productService.GetProductFullDetail(req.productId);
             }
             catch (Exception ex)
             {

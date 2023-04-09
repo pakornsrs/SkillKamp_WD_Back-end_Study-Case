@@ -54,17 +54,25 @@ namespace Web.Backend.BLL.Services
             return response;
         }
 
-        public ServiceResponseModel<ProductColorDTO> GetProductSizeById(int colorId)
+        public ServiceResponseModel<List<ProductColorDTO>> GetProductSizeByIds(List<int> colorId)
         {
-            var response = new ServiceResponseModel<ProductColorDTO>();
+            var response = new ServiceResponseModel<List<ProductColorDTO>>();
 
             try
             {
                 var query = (from q in this.dbContext.ProductColors
-                             where q.Id == colorId
-                             select q).FirstOrDefault();
+                             where colorId.Contains(q.Id)
+                             select q).ToList();
 
-                response.Item = mapper.Map<ProductColorDTO>(query);
+                var colors = new List<ProductColorDTO>();
+                
+                foreach(var item in query)
+                {
+                    var color = mapper.Map<ProductColorDTO>(query);
+                    colors.Add(color);
+                }
+
+                response.Item = colors;
 
                 response.ErrorCode = "0000";
                 response.ErrorMessage = "Success";

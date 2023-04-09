@@ -214,6 +214,11 @@ namespace Web.Backend.BLL.Services
             return response;
         }
 
+        //public ServiceResponseModel<LoginDTO> Logout(int userId)
+        //{
+
+        //}
+
         #endregion
     }
 }
