@@ -193,6 +193,8 @@ namespace Web.Backend.BLL.Services
                                     where product.ProductNameTh.Contains(Keyword) || product.ProductNameEn.Contains(Keyword) || product.DescTh.Contains(Keyword) || product.DescEn.Contains(Keyword)
                                     join discount in this.dbContext.DiscountCampeigns on product.DiscountId equals discount.Id
                                     join category in this.dbContext.ProductCategories on product.CategoryId equals category.Id
+                                    join detail in this.dbContext.ProductDetails on product.ProductDefaultDetailId equals detail.Id
+                                    orderby product.CreateDate descending
                                     select new ProductSearchResultDTO
                                     {
                                         ProductId = product.Id,
@@ -205,12 +207,15 @@ namespace Web.Backend.BLL.Services
                                         ProductDescTh = product.DescTh,
                                         ProductDescEn = product.DescEn,
                                         CanUseDiscountCode = product.CanUseDiscountCode,
-                                        IsDiscount = product.IsDiscount ,
+                                        IsDiscount = product.IsDiscount,
                                         DiscountId = discount.Id,
                                         DiscountDescTh = discount.DescTh,
                                         DiscountDescEn = discount.DescEn,
                                         DiscountPercent = discount.DisconutPercent,
                                         IsMultiDetail = product.IsMultiDetail,
+                                        PriceStart = detail.Price.Value,
+                                        DefaultImgPaht = detail.ImagePath,
+                                        Created = product.CreateDate
                                     })
                                     .GroupBy(obj => obj.ProductId)
                                     .Select(obj => obj.First())
@@ -252,6 +257,7 @@ namespace Web.Backend.BLL.Services
             }
 
             return response;
+
         }
         public ServiceResponseModel<List<ProductSearchResultDTO>> GetNewArrival()
         {
@@ -482,11 +488,17 @@ namespace Web.Backend.BLL.Services
                                            ColorCode = color.ColorCode,
 
                                        })
-                                       .GroupBy(obj => obj.ColorId)
+                                       .GroupBy(obj => obj.ProductDetailId)
                                        .Select(obj => obj.First())
                                        .ToList();
 
-                    productDetail = detailQuery.GroupBy(obj => obj.ProductDetailId).Select(obj => obj.First()).ToList();
+                    //detailQuery = detailQuery.GroupBy(obj => obj.ProductDetailId).Select(obj => obj.First()).ToList();
+
+                    foreach(var id in multiDetailProducIds)
+                    {
+                        var result = detailQuery.Where(obj => obj.ProductId == id).ToList().GroupBy(obj => obj.ColorId).Select(obj => obj.First()).ToList();
+                        productDetail.AddRange(result);
+                    }
                 }
 
                 return productDetail;

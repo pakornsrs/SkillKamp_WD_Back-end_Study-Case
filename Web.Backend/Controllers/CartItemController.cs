@@ -26,7 +26,7 @@ namespace Web.Backend.Controllers
 
             try
             {
-                result = cartItemService.AddNewItemToCart(req.userId, req.productId, req.productDetail, req.quantity);
+                result = cartItemService.AddNewItemToCart(req.userId, req.productId, req.productDetail, req.quantity,req.price);
             }
             catch (Exception ex)
             {
@@ -99,6 +99,42 @@ namespace Web.Backend.Controllers
             try
             {
                 result = cartItemService.DeleteCartSession(req.PurchaseSessionId);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return StatusCode(200, result);
+        }
+
+        [HttpPost()]
+        [Route("api/card/item/count")]
+        public async Task<IActionResult> GetCardItemCount([FromBody] UserIdRequestModel req)
+        {
+            var result = new ServiceResponseModel<int>();
+
+            try
+            {
+                result = cartItemService.GetUserCartItemCount(req.userId);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return StatusCode(200, result);
+        }
+
+        [HttpPost()]
+        [Route("api/card/item/get/all")]
+        public async Task<IActionResult> GetAllCardItem([FromBody] UserIdRequestModel req)
+        {
+            var result = new ServiceResponseModel<List<ProductCartItemDTO>>();
+
+            try
+            {
+                result = cartItemService.GetAllCartProduct(req.userId);
             }
             catch (Exception ex)
             {

@@ -9,6 +9,7 @@ using Web.Backend.DTO.Addresses;
 using Web.Backend.DTO.Campeigns;
 using Web.Backend.DTO.Cards;
 using Web.Backend.DTO.CartItem;
+using Web.Backend.DTO.Category;
 using Web.Backend.DTO.Coupon;
 using Web.Backend.DTO.Inventories;
 using Web.Backend.DTO.Orders;
@@ -50,6 +51,7 @@ namespace Web.Backend.BLL.ModelMappers
             CreateMap<DiscountCoupon, DiscountCouponDTO>();
             CreateMap<ProductRating, ProductRatingDTO>();
             CreateMap<ProductReview, ProductReviewDTO>();
+            CreateMap<ProductCategory, ProductCategoryDTO>();
 
             CreateMap<UserDTO, User>();
             CreateMap<RoleDTO, Role>();
@@ -72,6 +74,7 @@ namespace Web.Backend.BLL.ModelMappers
             CreateMap<DiscountCouponDTO, DiscountCoupon>();
             CreateMap<ProductRatingDTO, ProductRating>();
             CreateMap<ProductReviewDTO, ProductReview>();
+            CreateMap<ProductCategoryDTO, ProductCategory>();
         }
     }
 }

@@ -12,6 +12,7 @@ using Web.Backend.DAL;
 using Web.Backend.DAL.Entities;
 using Web.Backend.DTO;
 using Web.Backend.DTO.CartItem;
+using Web.Backend.DTO.ProductDetails;
 using Web.Backend.DTO.PurchastSession;
 
 namespace Web.Backend.BLL.Services
@@ -23,14 +24,14 @@ namespace Web.Backend.BLL.Services
 
         private IMapper mapper = new MapperConfiguration(cfg => cfg.AddProfile<ModelMapper>()).CreateMapper();
 
-        public CartItemService(SkillkampWdStudyCaseDbContext dbContext, 
+        public CartItemService(SkillkampWdStudyCaseDbContext dbContext,
                                IPurchaseSessionService purchaseSessionService)
         {
             this.dbContext = dbContext;
             this.purchaseSessionService = purchaseSessionService;
         }
 
-        public ServiceResponseModel<CartItemDTO> AddNewItemToCart(int userId, int productId, int productDetailId, int quantity)
+        public ServiceResponseModel<CartItemDTO> AddNewItemToCart(int userId, int productId, int productDetailId, int quantity, decimal price)
         {
             var response = new ServiceResponseModel<CartItemDTO>();
             var tranDateTime = DateTimeUtility.GetDateTimeThai();
@@ -42,11 +43,11 @@ namespace Web.Backend.BLL.Services
                     var sessionServiceResponse = purchaseSessionService.CheckActiveSession(userId);
                     var session = new PurchaseSessionDTO();
 
-                    if(!sessionServiceResponse.IsError && sessionServiceResponse.Item == null)
+                    if (!sessionServiceResponse.IsError && sessionServiceResponse.Item == null)
                     {
                         sessionServiceResponse = purchaseSessionService.CreateNewSession(userId);
                     }
-                    else if(sessionServiceResponse.IsError)
+                    else if (sessionServiceResponse.IsError)
                     {
                         response.ErrorCode = "AC0001";
                         response.ErrorMessage = "Cannot find or create session.";
@@ -60,8 +61,9 @@ namespace Web.Backend.BLL.Services
                                  where q.SessionId == session.Id && q.ProductId == productId && q.ProductDetailId == productDetailId
                                  select q).FirstOrDefault();
 
-                    if(query != null)
+                    if (query != null)
                     {
+                        query.Price = query.Price + price;
                         query.Quantity = query.Quantity + quantity;
                         query.UpdateDate = tranDateTime;
                         query.UpdateBy = "system";
@@ -81,6 +83,7 @@ namespace Web.Backend.BLL.Services
                         item.ProductId = productId;
                         item.ProductDetailId = productDetailId;
                         item.Quantity = quantity;
+                        item.Price = price;
                         item.CreateDate = tranDateTime;
                         item.UpdateDate = tranDateTime;
                         item.CreateBy = "system";
@@ -124,6 +127,7 @@ namespace Web.Backend.BLL.Services
                                  where q.Id == cartItemId
                                  select q).FirstOrDefault();
 
+                    query.Price = (query.Price / query.Quantity) + query.Price;
                     query.Quantity = query.Quantity + quantity;
 
                     query.UpdateDate = tranDateTime;
@@ -166,7 +170,7 @@ namespace Web.Backend.BLL.Services
                                  where q.Id == cartItemId
                                  select q).FirstOrDefault();
 
-                    if(query == null)
+                    if (query == null)
                     {
                         response.ErrorCode = "0000";
                         response.ErrorMessage = "Not found item in cart.";
@@ -179,6 +183,7 @@ namespace Web.Backend.BLL.Services
 
                     if (quantity > 0 && query.Quantity > 0)
                     {
+                        query.Price = query.Price - (query.Price / query.Quantity);
                         query.Quantity = query.Quantity - quantity;
 
                     }
@@ -304,8 +309,6 @@ namespace Web.Backend.BLL.Services
             return response;
         }
 
-
-
         public ServiceResponseModel<List<CartItemDTO>> GetAllCartItem(int sessionId)
         {
             var response = new ServiceResponseModel<List<CartItemDTO>>();
@@ -333,5 +336,144 @@ namespace Web.Backend.BLL.Services
 
             return response;
         }
+
+        public ServiceResponseModel<int> GetUserCartItemCount(int userId)
+        {
+            var response = new ServiceResponseModel<int>();
+            var tranDateTime = DateTimeUtility.GetDateTimeThai();
+
+            try
+            {
+                // Find session
+
+                var activeSession = purchaseSessionService.CheckActiveSession(userId);
+
+                if (!activeSession.IsError && activeSession.Item == null)
+                {
+                    response.Item = 0;
+                    response.ErrorCode = "0000";
+                    response.ErrorMessage = "Success";
+
+                    return response;
+                }
+
+                var cartItemQuery = (from q in this.dbContext.CartItems
+                                     where q.SessionId == activeSession.Item.Id
+                                     select q).ToList();
+
+                if (cartItemQuery == null)
+                {
+                    response.Item = 0;
+                    response.ErrorCode = "0000";
+                    response.ErrorMessage = "Success";
+
+                    return response;
+                }
+
+                response.Item = cartItemQuery.Count();
+                response.ErrorCode = "0000";
+                response.ErrorMessage = "Success";
+
+            }
+            catch (Exception ex)
+            {
+                response.ErrorCode = "BE9999";
+                response.ErrorMessage = "Internal server error.";
+            }
+
+            return response;
+        }
+
+        public ServiceResponseModel<List<ProductCartItemDTO>> GetAllCartProduct(int userId)
+        {
+            var response = new ServiceResponseModel<List<ProductCartItemDTO>>();
+            var tranDateTime = DateTimeUtility.GetDateTimeThai();
+
+            try
+            {
+                // Find session
+
+                var activeSession = purchaseSessionService.CheckActiveSession(userId);
+
+                if (!activeSession.IsError && activeSession.Item == null)
+                {
+                    response.ErrorCode = "AC0001";
+                    response.ErrorMessage = "Cannot fnd session.";
+
+                    return response;
+                }
+
+                var cartItemQuery = (from q in this.dbContext.CartItems
+                                     where q.SessionId == activeSession.Item.Id
+                                     select q).ToList();
+
+                if (cartItemQuery == null)
+                {
+                    response.ErrorCode = "AC0002";
+                    response.ErrorMessage = "Cannot get cart item.";
+
+                    return response;
+                }
+
+                var detaiIdlList = new List<int>();
+
+                foreach (var item in cartItemQuery)
+                {
+                    detaiIdlList.Add(item.ProductDetailId.Value);
+                }
+
+                var query = (from q in dbContext.ProductDetails
+                             where detaiIdlList.Contains(q.Id)
+                             join color in dbContext.ProductColors on q.ColorId equals color.Id
+                             join size in dbContext.ProductSizes on q.SizeId equals size.Id
+                             join product in dbContext.Products on q.ProductId equals product.Id
+                             select new ProductCartItemDTO
+                             {
+                                 ProductDetailId = q.Id,
+                                 ProductNameTh = product.ProductNameTh,
+                                 ProductNameEn = product.ProductNameEn,
+                                 DescTh = product.DescTh,
+                                 DescEn = product.DescEn,
+                                 SizeId = size.Id,
+                                 SizeDescTh = size.SizeDescTh,
+                                 SizeDescEn = size.SizeDescEn,
+                                 ColorId = color.Id,
+                                 ColorDescTh = color.ColorNameTh,
+                                 ColorDescEn = color.ColorNameEn,
+                                 ImagePath = q.ImagePath,
+                                 ColorCode = color.ColorCode
+                               
+                             })
+                             .GroupBy(obj => obj.ProductDetailId)
+                             .Select(obj => obj.First())
+                             .ToList();
+
+                var results = new List<ProductCartItemDTO>();
+
+                foreach(var item in cartItemQuery)
+                {
+                    var result = query.Where(obj => obj.ProductDetailId == item.ProductDetailId).FirstOrDefault();
+                    result.CartItemId = item.Id;
+                    result.Price = item.Price;
+                    result.Quantity = item.Quantity.Value;
+
+                    results.Add(result);
+                }
+
+                response.Item = results;
+                response.ErrorCode = "0000";
+                response.ErrorMessage = "Success";
+
+            }
+            catch (Exception ex)
+            {
+                response.ErrorCode = "BE9999";
+                response.ErrorMessage = "Internal server error.";
+            }
+
+            return response;
+        }
     }
+
+    
 }

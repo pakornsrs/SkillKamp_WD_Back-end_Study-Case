@@ -47,6 +47,7 @@ builder.Services.AddScoped<IPurchaseSessionService, PurchaseSessionService>();
 builder.Services.AddScoped<ICartItemService, CartItemService>();
 builder.Services.AddScoped<IProductRatingService, ProductRatingService>();
 builder.Services.AddScoped<IProductReviewService, ProductReviewService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 #endregion
 
 //var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();

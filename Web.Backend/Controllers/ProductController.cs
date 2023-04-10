@@ -6,6 +6,9 @@ using Web.Backend.Models.Users;
 using Web.Backend.Models.Products;
 using Web.Backend.DTO.Products;
 using Web.Backend.Models;
+using Web.Backend.DTO.ProductSizes;
+using Web.Backend.DTO.ProductColors;
+using Web.Backend.DTO.Category;
 
 namespace Web.Backend.Controllers
 {
@@ -13,11 +16,20 @@ namespace Web.Backend.Controllers
     {
         private readonly IProductService productService;
         private readonly IProductDetailService productDetailService;
+        private readonly IProductSizeService productSizeService;
+        private readonly IProductColorService productColorService;
+        private readonly ICategoryService categoryService;
         public ProductController(IProductService productService, 
-                                 IProductDetailService productDetailService)
+                                 IProductDetailService productDetailService,
+                                 IProductSizeService productSizeService,
+                                 IProductColorService productColorService,
+                                 ICategoryService categoryService)
         {
             this.productService = productService;
             this.productDetailService = productDetailService;
+            this.productSizeService = productSizeService;
+            this.productColorService = productColorService;
+            this.categoryService = categoryService;
         }
 
         [HttpPost()]
@@ -55,7 +67,6 @@ namespace Web.Backend.Controllers
 
             return StatusCode(200, result);
         }
-
 
         [HttpPost()]
         [Route("api/product/search")]
@@ -110,5 +121,61 @@ namespace Web.Backend.Controllers
 
             return StatusCode(200, result);
         }
+
+        [HttpGet()]
+        [Route("api/product/size/list")]
+        public async Task<IActionResult> GetAllProductSize()
+        {
+            var result = new ServiceResponseModel<List<ProductSizeDTO>>();
+
+            try
+            {
+                result = productSizeService.GetAllProductSize();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return StatusCode(200, result);
+        }
+
+        [HttpGet()]
+        [Route("api/product/color/list")]
+        public async Task<IActionResult> GetAllProductColor()
+        {
+            var result = new ServiceResponseModel<List<ProductColorDTO>>();
+
+            try
+            {
+                result = productColorService.GetAllProductColor();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return StatusCode(200, result);
+        }
+        
+        [HttpGet()]
+        [Route("api/product/category/list")]
+        public async Task<IActionResult> GetAllProductCategory()
+        {
+            var result = new ServiceResponseModel<List<ProductCategoryDTO>>();
+
+            try
+            {
+                result = categoryService.GetAllProductCategories();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return StatusCode(200, result);
+        }
+
+
     }
 }
