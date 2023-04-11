@@ -48,6 +48,10 @@ builder.Services.AddScoped<ICartItemService, CartItemService>();
 builder.Services.AddScoped<IProductRatingService, ProductRatingService>();
 builder.Services.AddScoped<IProductReviewService, ProductReviewService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IPurchasedOrderService, PurchasedOrderService>();
+builder.Services.AddScoped<IPaymentDetailService, PaymentDetailService>();
+builder.Services.AddScoped<IDiscountCouponService, DiscountCouponService>();
 #endregion
 
 //var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();

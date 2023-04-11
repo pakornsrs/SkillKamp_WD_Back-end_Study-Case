@@ -20,6 +20,4 @@ public partial class InvoiceDetail
     public string? CreateBy { get; set; }
 
     public string? UpdateBy { get; set; }
-
-    public virtual ICollection<PurchasedOrder> PurchasedOrders { get; } = new List<PurchasedOrder>();
 }

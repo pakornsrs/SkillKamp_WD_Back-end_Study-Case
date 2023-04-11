@@ -35,7 +35,7 @@ namespace Web.Backend.BLL.Services
             this.cartItemService = cartItemService;
         }
 
-        public ServiceResponseModel<OrderDTO> CreateProductOrder(int sessionId)
+        public ServiceResponseModel<OrderDTO> CreateProductOrder(int userId)
         {
             var response = new ServiceResponseModel<OrderDTO>();
             var tranDateTime = DateTimeUtility.GetDateTimeThai();
@@ -46,7 +46,7 @@ namespace Web.Backend.BLL.Services
                 {
                     // Get session
 
-                    var sessionServiceResponse = purchaseSessionService.CheckActiveSession(sessionId);
+                    var sessionServiceResponse = purchaseSessionService.CheckActiveSession(userId);
 
                     if (!sessionServiceResponse.IsError && sessionServiceResponse.Item == null)
                     {
@@ -66,6 +66,8 @@ namespace Web.Backend.BLL.Services
                     }
 
                     // Get product
+
+                    var sessionId = sessionServiceResponse.Item.Id;
 
                     var cartProductServiceResponse = cartItemService.GetAllCartItem(sessionId);
 
@@ -122,6 +124,32 @@ namespace Web.Backend.BLL.Services
             return response;
         }
 
+        public ServiceResponseModel<OrderDTO> GetOrderDetail(int orderId)
+        {
+            var response = new ServiceResponseModel<OrderDTO>();
+            var tranDateTime = DateTimeUtility.GetDateTimeThai();
+
+            try
+            {
+                var query = (from q in dbContext.Orders
+                             where q.Id == orderId
+                             select q).FirstOrDefault();
+
+                var result = mapper.Map<OrderDTO>(query);
+
+                response.Item = result;
+                response.ErrorCode = "0000";
+                response.ErrorMessage = "Success";
+            }
+            catch (Exception ex)
+            {
+                response.ErrorCode = "BE9999";
+                response.ErrorMessage = "Internal server error.";
+            }
+
+            return response;
+        }
+
         public ServiceResponseModel<OrderDTO> ApplyDiscountCoupon(int orderId, DiscountCouponDTO coupon)
         {
             var response = new ServiceResponseModel<OrderDTO>();
@@ -145,7 +173,7 @@ namespace Web.Backend.BLL.Services
 
                 // Update order
 
-                orderQuery.TotalAmount = orderQuery.TotalAmount * (1 - ((decimal)coupon.PercentDiscount/100));
+                //orderQuery.TotalAmount = orderQuery.TotalAmount * (1 - ((decimal)coupon.PercentDiscount/100));
                 orderQuery.CouponId = coupon.Id;
                 orderQuery.UpdateDate = tranDateTime;
                 orderQuery.UpdateBy = "system";

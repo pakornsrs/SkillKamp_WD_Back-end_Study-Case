@@ -7,13 +7,15 @@ public partial class PurchasedOrder
 {
     public int Id { get; set; }
 
-    public int? PaymentId { get; set; }
+    public int? OrderId { get; set; }
 
-    public int? DiscountCouponId { get; set; }
+    public int? UserId { get; set; }
 
     public int? InvoiceId { get; set; }
 
-    public int? OrderId { get; set; }
+    public int? PaymentId { get; set; }
+
+    public int? DiscountCouponId { get; set; }
 
     public decimal? Amount { get; set; }
 
@@ -23,11 +25,5 @@ public partial class PurchasedOrder
 
     public string? CreateDate { get; set; }
 
-    public virtual DiscountCoupon? DiscountCoupon { get; set; }
-
-    public virtual InvoiceDetail? Invoice { get; set; }
-
     public virtual Order? Order { get; set; }
-
-    public virtual PaymentDetail? Payment { get; set; }
 }

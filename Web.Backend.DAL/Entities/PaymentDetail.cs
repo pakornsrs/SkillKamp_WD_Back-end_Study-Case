@@ -7,6 +7,10 @@ public partial class PaymentDetail
 {
     public int Id { get; set; }
 
+    public int? UserId { get; set; }
+
+    public int? OrderId { get; set; }
+
     public int? PaymentMethod { get; set; }
 
     public int? CardId { get; set; }
@@ -22,6 +26,4 @@ public partial class PaymentDetail
     public string? UpdateBy { get; set; }
 
     public virtual UserCard? Card { get; set; }
-
-    public virtual ICollection<PurchasedOrder> PurchasedOrders { get; } = new List<PurchasedOrder>();
 }

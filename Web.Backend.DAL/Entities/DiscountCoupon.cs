@@ -33,7 +33,5 @@ public partial class DiscountCoupon
 
     public string? UpdateBy { get; set; }
 
-    public virtual ICollection<PurchasedOrder> PurchasedOrders { get; } = new List<PurchasedOrder>();
-
     public virtual User? User { get; set; }
 }

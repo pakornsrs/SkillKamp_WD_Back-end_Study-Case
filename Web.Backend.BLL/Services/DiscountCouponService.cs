@@ -235,7 +235,28 @@ namespace Web.Backend.BLL.Services
             return response;
         }
 
+        public ServiceResponseModel<DiscountCouponDTO> GetCouponById(int couponId)
+        {
+            var response = new ServiceResponseModel<DiscountCouponDTO>();
 
+            try
+            {
+                var query = (from q in dbContext.DiscountCoupons
+                             where q.Id == couponId
+                             select q).FirstOrDefault();
+
+                response.Item = mapper.Map<DiscountCouponDTO>(query);
+                response.ErrorCode = "0000";
+                response.ErrorMessage = "Success";
+            }
+            catch (Exception ex)
+            {
+                response.ErrorCode = "BE9999";
+                response.ErrorMessage = "Internal server error.";
+            }
+
+            return response;
+        }
 
         private string GenerateCouponNumber()
         {

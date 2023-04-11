@@ -11,7 +11,8 @@ namespace Web.Backend.BLL.IServices
 {
     public interface IOrderService
     {
-        public ServiceResponseModel<OrderDTO> CreateProductOrder(int sessionId);
+        public ServiceResponseModel<OrderDTO> CreateProductOrder(int userId);
+        public ServiceResponseModel<OrderDTO> GetOrderDetail(int orderId);
         public ServiceResponseModel<OrderDTO> ApplyDiscountCoupon(int orderId, DiscountCouponDTO coupon);
     }
 }

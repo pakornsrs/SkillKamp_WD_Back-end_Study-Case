@@ -13,6 +13,7 @@ using Web.Backend.DTO.Category;
 using Web.Backend.DTO.Coupon;
 using Web.Backend.DTO.Inventories;
 using Web.Backend.DTO.Orders;
+using Web.Backend.DTO.PaymentDetail;
 using Web.Backend.DTO.ProductColors;
 using Web.Backend.DTO.ProductDetails;
 using Web.Backend.DTO.ProductRating;
@@ -52,6 +53,7 @@ namespace Web.Backend.BLL.ModelMappers
             CreateMap<ProductRating, ProductRatingDTO>();
             CreateMap<ProductReview, ProductReviewDTO>();
             CreateMap<ProductCategory, ProductCategoryDTO>();
+            CreateMap<PaymentDetail, PaymentDetailDTO>();
 
             CreateMap<UserDTO, User>();
             CreateMap<RoleDTO, Role>();
@@ -75,6 +77,7 @@ namespace Web.Backend.BLL.ModelMappers
             CreateMap<ProductRatingDTO, ProductRating>();
             CreateMap<ProductReviewDTO, ProductReview>();
             CreateMap<ProductCategoryDTO, ProductCategory>();
+            CreateMap<PaymentDetailDTO, PaymentDetail>();
         }
     }
 }

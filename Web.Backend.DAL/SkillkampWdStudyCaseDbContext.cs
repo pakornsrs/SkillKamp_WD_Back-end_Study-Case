@@ -180,7 +180,6 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
             entity.ToTable("PAYMENT_DETAIL");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreateBy).HasMaxLength(50);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.UpdateBy).HasMaxLength(50);
@@ -298,7 +297,7 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
             entity.Property(e => e.CreateBy).HasMaxLength(20);
             entity.Property(e => e.CreateDate).HasColumnType("date");
-            entity.Property(e => e.Rating).HasColumnType("numeric(18, 0)");
+            entity.Property(e => e.Rating).HasColumnType("numeric(18, 2)");
             entity.Property(e => e.UpdateBy).HasMaxLength(20);
             entity.Property(e => e.UpdateDate).HasColumnType("date");
         });
@@ -368,22 +367,11 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
             entity.Property(e => e.CreateDate).HasMaxLength(50);
             entity.Property(e => e.DiscountAmount).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.TotalAmount).HasColumnType("decimal(18, 0)");
-
-            entity.HasOne(d => d.DiscountCoupon).WithMany(p => p.PurchasedOrders)
-                .HasForeignKey(d => d.DiscountCouponId)
-                .HasConstraintName("FK__PURCHASED__Disco__5812160E");
-
-            entity.HasOne(d => d.Invoice).WithMany(p => p.PurchasedOrders)
-                .HasForeignKey(d => d.InvoiceId)
-                .HasConstraintName("FK__PURCHASED__Invoi__59063A47");
+            entity.Property(e => e.UserId).HasColumnName("userId");
 
             entity.HasOne(d => d.Order).WithMany(p => p.PurchasedOrders)
                 .HasForeignKey(d => d.OrderId)
                 .HasConstraintName("FK__PURCHASED__Order__5629CD9C");
-
-            entity.HasOne(d => d.Payment).WithMany(p => p.PurchasedOrders)
-                .HasForeignKey(d => d.PaymentId)
-                .HasConstraintName("FK__PURCHASED__Payme__571DF1D5");
         });
 
         modelBuilder.Entity<Role>(entity =>
