@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Backend", "Web.Backend\Web.Backend.csproj", "{98A9222B-8F1A-4367-9DBB-686716FEDFCF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.Backend", "Web.Backend\Web.Backend.csproj", "{98A9222B-8F1A-4367-9DBB-686716FEDFCF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Backend.DTO", "Web.Backend.DTO\Web.Backend.DTO.csproj", "{99550E4B-F4D0-458F-A8AC-2E8A6347F515}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.Backend.DTO", "Web.Backend.DTO\Web.Backend.DTO.csproj", "{99550E4B-F4D0-458F-A8AC-2E8A6347F515}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Backend.DAL", "Web.Backend.DAL\Web.Backend.DAL.csproj", "{A7D11572-9C48-46A5-8963-46E7107EB0CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.Backend.DAL", "Web.Backend.DAL\Web.Backend.DAL.csproj", "{A7D11572-9C48-46A5-8963-46E7107EB0CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Backend.BLL", "Web.Backend.BLL\Web.Backend.BLL.csproj", "{13066BB9-C4C3-456C-ADE5-9848B697659B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.Backend.BLL", "Web.Backend.BLL\Web.Backend.BLL.csproj", "{13066BB9-C4C3-456C-ADE5-9848B697659B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Backend.External.PlugIn", "Web.Backend.External.PlugIn\Web.Backend.External.PlugIn.csproj", "{488FE6FF-2EE0-46A6-9FE9-4DCCD11260E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.Backend.External.PlugIn", "Web.Backend.External.PlugIn\Web.Backend.External.PlugIn.csproj", "{488FE6FF-2EE0-46A6-9FE9-4DCCD11260E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Backend.Internal.PlugIn", "Web.Backend.Internal.PlugIn\Web.Backend.Internal.PlugIn.csproj", "{AE5314C5-C83E-45EC-9A34-E0719BD5F1C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.Backend.Internal.PlugIn", "Web.Backend.Internal.PlugIn\Web.Backend.Internal.PlugIn.csproj", "{AE5314C5-C83E-45EC-9A34-E0719BD5F1C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Backend.Test", "Web.Backend.Test\Web.Backend.Test.csproj", "{1FF63EAE-554F-454B-96D0-131EB8CFED22}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{AE5314C5-C83E-45EC-9A34-E0719BD5F1C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE5314C5-C83E-45EC-9A34-E0719BD5F1C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE5314C5-C83E-45EC-9A34-E0719BD5F1C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FF63EAE-554F-454B-96D0-131EB8CFED22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FF63EAE-554F-454B-96D0-131EB8CFED22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FF63EAE-554F-454B-96D0-131EB8CFED22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FF63EAE-554F-454B-96D0-131EB8CFED22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

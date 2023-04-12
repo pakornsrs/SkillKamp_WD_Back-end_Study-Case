@@ -20,7 +20,7 @@ namespace Web.Backend.Controllers
 
         [HttpPost()]
         [Route("api/user/registration")]
-        public async Task<IActionResult> GetServiceVersion([FromBody] RegistrationRequestModel req)
+        public async Task<IActionResult> Registration([FromBody] RegistrationRequestModel req)
         {
             var result = new ServiceResponseModel<RegistrationDTO>();
 

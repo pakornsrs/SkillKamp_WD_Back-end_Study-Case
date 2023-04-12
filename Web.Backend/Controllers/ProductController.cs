@@ -52,7 +52,7 @@ namespace Web.Backend.Controllers
 
         [HttpPost()]
         [Route("api/product/new/detail")]
-        public async Task<IActionResult> AddNewProductDetail([FromBody] AddNewProductDetailRequestModel req)
+        public async Task<IActionResult> AddAditionalDetail([FromBody] AddNewProductDetailRequestModel req)
         {
             var result = new ServiceResponseModel<DefaultResponseModel>();
 
@@ -70,7 +70,7 @@ namespace Web.Backend.Controllers
 
         [HttpPost()]
         [Route("api/product/search")]
-        public async Task<IActionResult> SearchProduct([FromBody] SearchProductRequestMode req)
+        public async Task<IActionResult> SerchProductByKeyword([FromBody] SearchProductRequestMode req)
         {
             var result = new ServiceResponseModel<List<ProductSearchResultDTO>>();
 
@@ -88,7 +88,7 @@ namespace Web.Backend.Controllers
 
         [HttpGet()]
         [Route("api/product/new")]
-        public async Task<IActionResult> NewArrivalProd()
+        public async Task<IActionResult> GetNewArrival()
         {
             var result = new ServiceResponseModel<List<ProductSearchResultDTO>>();
 
@@ -106,7 +106,7 @@ namespace Web.Backend.Controllers
 
         [HttpPost()]
         [Route("api/product/detail/get")]
-        public async Task<IActionResult> GetProductDetail([FromBody] ProductIdRequestModel req)
+        public async Task<IActionResult> GetProductFullDetail([FromBody] ProductIdRequestModel req)
         {
             var result = new ServiceResponseModel<ProductSearchResultDTO>();
 
@@ -160,7 +160,7 @@ namespace Web.Backend.Controllers
         
         [HttpGet()]
         [Route("api/product/category/list")]
-        public async Task<IActionResult> GetAllProductCategory()
+        public async Task<IActionResult> GetAllProductCategories()
         {
             var result = new ServiceResponseModel<List<ProductCategoryDTO>>();
 

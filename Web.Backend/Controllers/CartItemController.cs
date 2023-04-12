@@ -110,7 +110,7 @@ namespace Web.Backend.Controllers
 
         [HttpPost()]
         [Route("api/card/item/count")]
-        public async Task<IActionResult> GetCardItemCount([FromBody] UserIdRequestModel req)
+        public async Task<IActionResult> GetUserCartItemCount([FromBody] UserIdRequestModel req)
         {
             var result = new ServiceResponseModel<int>();
 
@@ -128,7 +128,7 @@ namespace Web.Backend.Controllers
 
         [HttpPost()]
         [Route("api/card/item/get/all")]
-        public async Task<IActionResult> GetAllCardItem([FromBody] UserIdRequestModel req)
+        public async Task<IActionResult> GetAllCartProduct([FromBody] UserIdRequestModel req)
         {
             var result = new ServiceResponseModel<List<ProductCartItemDTO>>();
 
@@ -138,7 +138,7 @@ namespace Web.Backend.Controllers
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
 
             return StatusCode(200, result);

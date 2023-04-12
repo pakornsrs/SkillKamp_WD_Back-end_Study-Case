@@ -18,7 +18,7 @@ namespace Web.Backend.Controllers
 
         [HttpPost()]
         [Route("api/address/get")]
-        public async Task<IActionResult> GetCardByUSerId([FromBody] UserIdRequestModel req)
+        public async Task<IActionResult> GetAddressByUserId([FromBody] UserIdRequestModel req)
         {
             var result = new ServiceResponseModel<List<AddressDTO>>();
 
