@@ -66,7 +66,7 @@ namespace Web.Backend.BLL.Services
 
                     var discountCoupon = new DiscountCoupon();
 
-                    discountCoupon.UserId = userId;
+                    discountCoupon.UserId = userId == 0 ? null : userId;
                     discountCoupon.Type = (int) type;
                     discountCoupon.CouponCode = coupon;
                     discountCoupon.IsActive = true;
@@ -83,7 +83,7 @@ namespace Web.Backend.BLL.Services
                     dbContext.Set<DiscountCoupon>().Add(discountCoupon);
                     dbContext.SaveChanges();
 
-                    defaultModel.message = "Add coupon for user success";
+                    defaultModel.message = "Add coupon for user success : " + coupon;
 
                     response.Item = defaultModel;
 
@@ -175,6 +175,8 @@ namespace Web.Backend.BLL.Services
                         return response;
                     }
 
+                    orderServiceResponse.Item.percentDiscount = coupon.PercentDiscount.Value;
+
                     response.Item = orderServiceResponse.Item;
 
                     response.ErrorCode = "0000";
@@ -260,7 +262,12 @@ namespace Web.Backend.BLL.Services
 
         private string GenerateCouponNumber()
         {
-            return "Test";
+            Guid myuuid = Guid.NewGuid();
+            string myuuidAsString = myuuid.ToString();
+
+            string code = myuuidAsString.Replace("-", string.Empty).Substring(0, 8);
+
+            return code;
         }
     }
 }

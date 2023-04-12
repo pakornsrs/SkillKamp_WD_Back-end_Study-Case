@@ -65,6 +65,22 @@ namespace Web.Backend.BLL.Services
                         return response;
                     }
 
+                    // query order
+
+                    var orderQuery = (from q in dbContext.Orders
+                                       where q.SessionId == sessionServiceResponse.Item.Id
+                                       select q).FirstOrDefault();
+
+                    if(orderQuery != null)
+                    {
+                        response.Item = mapper.Map<OrderDTO>(orderQuery);
+
+                        response.ErrorCode = "0000";
+                        response.ErrorMessage = "Success.";
+
+                        return response;
+                    }
+
                     // Get product
 
                     var sessionId = sessionServiceResponse.Item.Id;
@@ -179,8 +195,11 @@ namespace Web.Backend.BLL.Services
                 orderQuery.UpdateBy = "system";
 
                 this.dbContext.Set<Order>().Update(orderQuery);
+                dbContext.SaveChanges();
 
                 response.Item = mapper.Map<OrderDTO>(orderQuery);
+
+                response.Item.TotalAmount = response.Item.TotalAmount * (1 - ((decimal)coupon.PercentDiscount / 100));
 
                 response.ErrorCode = "0000";
                 response.ErrorMessage = "Success.";
