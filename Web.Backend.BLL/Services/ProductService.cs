@@ -484,7 +484,7 @@ namespace Web.Backend.BLL.Services
                                            ProductDetailId = detail.Id,
                                            ColorId = detail.ColorId,
                                            ColorDescTh = color.ColorNameTh,
-                                           ColorDescEn = color.ColorNameTh,
+                                           ColorDescEn = color.ColorNameEn,
                                            ColorCode = color.ColorCode,
 
                                        })

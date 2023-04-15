@@ -11,5 +11,6 @@ namespace Web.Backend.BLL.IServices
     public interface IProductReviewService
     {
         public ServiceResponseModel<List<ProductReviewCountDTO>> GetReviewCount(List<int> productIds);
+        public ServiceResponseModel<DefaultResponseModel> CreatrProductReview(int userId, int prodId, decimal rating, string reviewerName, string text, bool isRecommend);
     }
 }

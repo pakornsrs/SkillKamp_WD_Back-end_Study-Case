@@ -11,6 +11,8 @@ namespace Web.Backend.DTO.Cards
         public string? CardNo { get; set; }
         public string? NameOnCard { get; set; }
         public int? Provider { get; set; }
+        public long? CardExpireDateUnix { get; set; }
+        public string? Cvv { get; set; }
         public DateTime? CardExpireDate { get; set; }
     }
 }

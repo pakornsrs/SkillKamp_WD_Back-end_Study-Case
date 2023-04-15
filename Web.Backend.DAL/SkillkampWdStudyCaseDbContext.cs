@@ -308,9 +308,9 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
             entity.ToTable("PRODUCT_REVIEW");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreateBy).HasMaxLength(50);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Rating).HasColumnType("numeric(18, 0)");
             entity.Property(e => e.ReviewerName).HasMaxLength(50);
             entity.Property(e => e.ReviewerText).HasMaxLength(255);
             entity.Property(e => e.UpdateBy).HasMaxLength(50);
@@ -483,6 +483,7 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
             entity.Property(e => e.CardExpireDate).HasColumnType("datetime");
             entity.Property(e => e.CreateBy).HasMaxLength(50);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Cvv).HasColumnName("CVV");
             entity.Property(e => e.UpdateBy).HasMaxLength(50);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
 

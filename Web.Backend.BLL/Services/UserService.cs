@@ -125,11 +125,12 @@ namespace Web.Backend.BLL.Services
 
                     var userToken = userTokenServiceResponse.Item;
 
-                    // Update data for tabel [User]
+                    //Update data for tabel[User]
 
-                    user.UserTokenId = userToken.Id;
-                    dbContext.Set<User>().Update(user);
-                    dbContext.SaveChanges();
+
+                   user.UserTokenId = userToken.Id;
+                   dbContext.Set<User>().Update(user);
+                   dbContext.SaveChanges();
 
                     response.Item = mapper.Map<RegistrationDTO>(user);
                     response.Item.UserToken = userToken.Token;

@@ -15,6 +15,8 @@ public partial class UserCard
 
     public DateTime? CardExpireDate { get; set; }
 
+    public string? Cvv { get; set; }
+
     public int? Provider { get; set; }
 
     public DateTime? CreateDate { get; set; }

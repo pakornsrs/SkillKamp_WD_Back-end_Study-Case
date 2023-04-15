@@ -73,9 +73,13 @@ namespace Web.Backend.BLL.Services
 
                 foreach (var item in cards)
                 {
+                    var unixTime = cardList.Where(obj => obj.CardNo == item.CardNo).FirstOrDefault();
+
                     item.UserId = userId;
                     item.CardNo = SecureDataUtility.EncryptString(secureKey, item.CardNo);
                     item.NameOnCard = SecureDataUtility.EncryptString(secureKey, item.NameOnCard);
+                    item.CardExpireDate = DateTimeUtility.ConvertUnixToDateTime(unixTime.CardExpireDateUnix.Value);
+                    item.Cvv = SecureDataUtility.EncryptString(secureKey, item.Cvv);
                     item.CreateDate = tranDateTime;
                     item.UpdateDate = tranDateTime;
                     item.CreateBy = "system";
