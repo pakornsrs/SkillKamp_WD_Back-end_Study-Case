@@ -9,6 +9,7 @@ namespace Web.Backend.DTO.CartItem
     public class CartItemDTO
     {
         public int Id { get; set; }
+        public int OrderId { get; set; }
         public int? SessionId { get; set; }
         public int? ProductId { get; set; }
         public int? productDetailId { get; set; }

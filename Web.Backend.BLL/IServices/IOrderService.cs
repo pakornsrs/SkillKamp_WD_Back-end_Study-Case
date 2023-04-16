@@ -13,6 +13,7 @@ namespace Web.Backend.BLL.IServices
     {
         public ServiceResponseModel<OrderDTO> CreateProductOrder(int userId);
         public ServiceResponseModel<OrderDTO> GetOrderDetail(int orderId);
+        public ServiceResponseModel<List<OrderDTO>> GetOrderDetailList(List<int?> orderIds);
         public ServiceResponseModel<OrderDTO> ApplyDiscountCoupon(int orderId, DiscountCouponDTO coupon);
     }
 }

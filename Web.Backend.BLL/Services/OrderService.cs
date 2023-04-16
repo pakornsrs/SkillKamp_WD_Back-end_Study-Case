@@ -173,6 +173,32 @@ namespace Web.Backend.BLL.Services
             return response;
         }
 
+        public ServiceResponseModel<List<OrderDTO>> GetOrderDetailList(List<int?> orderIds)
+        {
+            var response = new ServiceResponseModel<List<OrderDTO>>();
+            var tranDateTime = DateTimeUtility.GetDateTimeThai();
+
+            try
+            {
+                var query = (from q in dbContext.Orders
+                             where orderIds.Contains(q.Id)
+                             select q).ToList();
+
+                var result = mapper.Map<List<OrderDTO>>(query);
+
+                response.Item = result;
+                response.ErrorCode = "0000";
+                response.ErrorMessage = "Success";
+            }
+            catch (Exception ex)
+            {
+                response.ErrorCode = "BE9999";
+                response.ErrorMessage = "Internal server error.";
+            }
+
+            return response;
+        }
+
         public ServiceResponseModel<OrderDTO> ApplyDiscountCoupon(int orderId, DiscountCouponDTO coupon)
         {
             var response = new ServiceResponseModel<OrderDTO>();

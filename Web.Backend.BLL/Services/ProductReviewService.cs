@@ -64,7 +64,7 @@ namespace Web.Backend.BLL.Services
             return response;
         }
 
-        public ServiceResponseModel<DefaultResponseModel> CreatrProductReview(int userId, int prodId, decimal rating, string reviewerName, string text, bool isRecommend )
+        public ServiceResponseModel<DefaultResponseModel> CreatrProductReview(int userId, int prodId, int prodDetailId, int orderId, decimal rating, string reviewerName, string text, bool isRecommend )
         {
             var response = new ServiceResponseModel<DefaultResponseModel>();
             var defaultMode = new DefaultResponseModel();
@@ -77,7 +77,10 @@ namespace Web.Backend.BLL.Services
                     // Check review statuc
 
                     var queryReview = (from q in dbContext.ProductReviews
-                                       where q.UserId == userId && q.ProductId == prodId
+                                       where q.UserId == userId 
+                                             && q.ProductId == prodId
+                                             && q.ProductDetailId == prodDetailId
+                                             && q.OrderId == orderId
                                        select q ).FirstOrDefault();
 
                     if(queryReview != null)
@@ -94,6 +97,8 @@ namespace Web.Backend.BLL.Services
 
                     review.UserId = userId;
                     review.ProductId = prodId;
+                    review.ProductDetailId = prodDetailId;
+                    review.OrderId = orderId;
                     review.Rating = rating;
                     review.ReviewerName = reviewerName;
                     review.ReviewerText = text;
@@ -172,5 +177,7 @@ namespace Web.Backend.BLL.Services
 
             return response;
         }
+
+
     }
 }

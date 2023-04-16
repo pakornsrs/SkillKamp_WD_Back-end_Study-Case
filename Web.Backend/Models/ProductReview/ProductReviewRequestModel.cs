@@ -4,6 +4,8 @@
     {
         public int UserId { get; set; }
         public int ProdId { get; set; }
+        public int ProdDetailId { get; set; }
+        public int OrderId { get; set; }
         public decimal Rating { get; set; }
         public string ReviewerName { get; set; }
         public string Text { get; set; }

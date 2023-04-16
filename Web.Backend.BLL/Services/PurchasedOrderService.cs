@@ -2,8 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Identity.Client;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +23,7 @@ using Web.Backend.DTO.Inventories;
 using Web.Backend.DTO.Orders;
 using Web.Backend.DTO.PaymentDetail;
 using Web.Backend.DTO.ProductDetails;
+using Web.Backend.DTO.ProductReview;
 
 namespace Web.Backend.BLL.Services
 {
@@ -236,5 +240,124 @@ namespace Web.Backend.BLL.Services
                 
         }
 
+        public ServiceResponseModel<List<PurchastedProductDTO>> GetPurchastItemHistory(int userId)
+        {
+            var response = new ServiceResponseModel<List<PurchastedProductDTO>>();
+            var tranDateTime = DateTimeUtility.GetDateTimeThai();
+
+
+            using (IDbContextTransaction transaction = this.dbContext.Database.BeginTransaction())
+            {
+                try
+                {
+                    // get purchast record
+
+                    var queryRecord = (from q in dbContext.PurchasedOrders
+                                       where q.UserId == userId
+                                       select q).ToList();
+
+                    if(queryRecord == null || queryRecord.Count <= 0)
+                    {
+                        response.ErrorCode = "PH0001";
+                        response.ErrorMessage = "No purchast history record.";
+                    }
+
+                    var orderIds = queryRecord.Select(obj => obj.OrderId).ToList();
+
+                    // Get order detail
+
+                    var orderResponse = orderService.GetOrderDetailList(orderIds);
+
+                    if (orderResponse.Item == null || orderResponse.Item.Count <= 0)
+                    {
+                        response.ErrorCode = "PH0002";
+                        response.ErrorMessage = "Cannot get order detail.";
+                    }
+
+                    var cartItems = new List<CartItemDTO>();
+
+                    foreach(var order in orderResponse.Item)
+                    {
+                        var itemList = JsonConvert.DeserializeObject<List<CartItemDTO>>(order.CartItem);
+                        foreach (var item in itemList)
+                        {
+                            item.OrderId = order.Id;
+                            cartItems.Add(item);
+                        }
+                    }
+
+                    // Get detail
+
+                    var result = new List<PurchastedProductDTO>();
+
+                    foreach(var item in cartItems)
+                    {
+                        var queryDetail = (from detail in dbContext.ProductDetails
+                                           where detail.Id == item.productDetailId
+                                           join prod in dbContext.Products on detail.ProductId equals prod.Id
+                                           join size in dbContext.ProductSizes on detail.SizeId equals size.Id
+                                           join color in dbContext.ProductColors on detail.ColorId equals color.Id
+                                           select new PurchastedProductDTO
+                                           {
+                                               OrderId = item.OrderId,
+                                               ProductId = prod.Id,
+                                               ProductDetailId = detail.Id,
+                                               ProductNameTh = prod.ProductNameTh,
+                                               ProductNameEn = prod.ProductNameEn,
+                                               DescTh = prod.DescTh,
+                                               DescEn = prod.DescEn,
+                                               Price = detail.Price,
+                                               SizeId = size.Id,
+                                               SizeDescTh = size.SizeDescTh,
+                                               SizeDescEn = size.SizeDescEn,
+                                               ColorId = color.Id,
+                                               ColorDescTh = color.ColorNameTh,
+                                               ColorDescEn = color.ColorNameEn,
+                                               ImagePath = detail.ImagePath,
+                                               ColorCode = color.ColorCode,
+                                           }).FirstOrDefault();
+
+                        if (queryDetail != null) result.Add(queryDetail);
+                    }
+
+                    // Find review
+
+                    foreach (var item in result)
+                    {
+                        var queryReview = (from review in dbContext.ProductReviews
+                                           where review.UserId == userId 
+                                                 && review.ProductId == item.ProductId
+                                                 && review.ProductDetailId == item.ProductDetailId
+                                                 && review.OrderId == item.OrderId 
+                                           select review).FirstOrDefault();
+
+                        if(queryReview != null)
+                        {
+                            var review = mapper.Map<ProductReviewDTO>(queryReview);
+                            item.ReviewDetail = review;
+                        }
+                        else
+                        {
+                            item.ReviewDetail = null;
+                        }
+                    }
+
+                    response.Item = result;
+                    response.ErrorCode = "0000";
+                    response.ErrorMessage = "Success";
+
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+
+                    response.ErrorCode = "BE9999";
+                    response.ErrorMessage = "Interal server error.";
+                }
+            }
+
+            return response;
+        }
     }
 }

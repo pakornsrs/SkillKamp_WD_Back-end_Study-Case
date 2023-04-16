@@ -22,7 +22,7 @@ namespace Web.Backend.Controllers
 
             try
             {
-                result = productReviewService.CreatrProductReview(req.UserId, req.ProdId, req.Rating,req.ReviewerName, req.Text, req.IsRecommend);
+                result = productReviewService.CreatrProductReview(req.UserId, req.ProdId, req.ProdDetailId, req.OrderId, req.Rating,req.ReviewerName, req.Text, req.IsRecommend);
             }
             catch (Exception ex)
             {
