@@ -14,5 +14,6 @@ namespace Web.Backend.Models.Order
         public int paymentType { get; set; }
 
         public int cardId { get; set; }
+        public int couponId { get; set; }
     }
 }

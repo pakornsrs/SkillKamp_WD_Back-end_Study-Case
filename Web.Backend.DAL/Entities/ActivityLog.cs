@@ -11,13 +11,15 @@ public partial class ActivityLog
 
     public int? Activity { get; set; }
 
-    public int? ActivityDesc { get; set; }
+    public string? ActivityDesc { get; set; }
 
     public int? Status { get; set; }
 
     public string? ErrorCode { get; set; }
 
     public string? ErrorMessage { get; set; }
+
+    public string? ExceptionMessage { get; set; }
 
     public string? CreateDate { get; set; }
 

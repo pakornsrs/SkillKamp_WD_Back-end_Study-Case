@@ -9,6 +9,6 @@ namespace Web.Backend.BLL.IServices
 {
     public interface IPurchasedOrderService
     {
-        public ServiceResponseModel<DefaultResponseModel> PurchastOrder(int userId, int orderId, int paymentType, int cardId);
+        public ServiceResponseModel<DefaultResponseModel> PurchastOrder(int userId, int orderId, int paymentType, int cardId, int? couponId);
     }
 }

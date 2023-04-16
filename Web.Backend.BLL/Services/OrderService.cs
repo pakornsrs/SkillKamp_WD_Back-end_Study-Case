@@ -65,22 +65,6 @@ namespace Web.Backend.BLL.Services
                         return response;
                     }
 
-                    // query order
-
-                    var orderQuery = (from q in dbContext.Orders
-                                       where q.SessionId == sessionServiceResponse.Item.Id
-                                       select q).FirstOrDefault();
-
-                    if(orderQuery != null)
-                    {
-                        response.Item = mapper.Map<OrderDTO>(orderQuery);
-
-                        response.ErrorCode = "0000";
-                        response.ErrorMessage = "Success.";
-
-                        return response;
-                    }
-
                     // Get product
 
                     var sessionId = sessionServiceResponse.Item.Id;
@@ -104,24 +88,47 @@ namespace Web.Backend.BLL.Services
 
                     var productCart = cartProductServiceResponse.Item;
 
-                    // Create order mode
+                    // Create order model
 
-                    var order = new Order();
+                    // query order
 
-                    order.SessionId = sessionId;
-                    order.Amount = productCart.Sum(item => item.Price);
-                    order.TotalAmount = order.Amount;
-                    order.CartItem = JsonConvert.SerializeObject(productCart);
-                    order.CouponId = 0;
-                    order.CreateDate = tranDateTime;
-                    order.UpdateDate = tranDateTime;
-                    order.CreateBy = "system";
-                    order.UpdateBy = "system";
+                    var orderQuery = (from q in dbContext.Orders
+                                      where q.SessionId == sessionServiceResponse.Item.Id
+                                      select q).FirstOrDefault();
 
-                    dbContext.Set<Order>().Add(order);
-                    dbContext.SaveChanges();
+                    if (orderQuery != null)
+                    {
+                        orderQuery.Amount = productCart.Sum(item => item.Price);
+                        orderQuery.TotalAmount = orderQuery.Amount;
+                        orderQuery.CartItem = JsonConvert.SerializeObject(productCart);
+                        orderQuery.CouponId = 0;
+                        orderQuery.UpdateDate = tranDateTime;
+                        orderQuery.UpdateBy = "system";
 
-                    response.Item = mapper.Map<OrderDTO>(order);
+                        dbContext.Set<Order>().Update(orderQuery);
+                        dbContext.SaveChanges();
+
+                        response.Item = mapper.Map<OrderDTO>(orderQuery);
+                    }
+                    else
+                    {
+                        var order = new Order();
+
+                        order.SessionId = sessionId;
+                        order.Amount = productCart.Sum(item => item.Price);
+                        order.TotalAmount = order.Amount;
+                        order.CartItem = JsonConvert.SerializeObject(productCart);
+                        order.CouponId = 0;
+                        order.CreateDate = tranDateTime;
+                        order.UpdateDate = tranDateTime;
+                        order.CreateBy = "system";
+                        order.UpdateBy = "system";
+
+                        dbContext.Set<Order>().Add(order);
+                        dbContext.SaveChanges();
+
+                        response.Item = mapper.Map<OrderDTO>(order);
+                    }
 
                     response.ErrorCode = "0000";
                     response.ErrorMessage = "Success.";

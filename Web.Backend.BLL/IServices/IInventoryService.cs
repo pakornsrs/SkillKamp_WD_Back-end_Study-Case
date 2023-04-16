@@ -11,5 +11,6 @@ namespace Web.Backend.BLL.IServices
     public interface IInventoryService
     {
         public ServiceResponseModel<List<InventoryDTO>> CreateInventory(List<InventoryDTO> req);
+        public ServiceResponseModel<DefaultResponseModel> UpdateInvertory(List<InventoryQtyDTO> update);
     }
 }

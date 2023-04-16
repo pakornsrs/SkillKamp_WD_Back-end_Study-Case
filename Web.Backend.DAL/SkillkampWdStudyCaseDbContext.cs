@@ -74,7 +74,7 @@ public partial class SkillkampWdStudyCaseDbContext : DbContext
 
             entity.ToTable("ACTIVITY_LOG");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.ActivityDesc).HasMaxLength(100);
             entity.Property(e => e.CreateBy).HasMaxLength(50);
             entity.Property(e => e.CreateDate).HasMaxLength(50);
             entity.Property(e => e.ErrorCode).HasMaxLength(10);

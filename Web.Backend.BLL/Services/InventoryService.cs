@@ -70,5 +70,53 @@ namespace Web.Backend.BLL.Services
 
             return response;
         }
+
+        public ServiceResponseModel<DefaultResponseModel> UpdateInvertory (List<InventoryQtyDTO> update)
+        {
+            var response = new ServiceResponseModel<DefaultResponseModel>();
+            var defaultResponse = new DefaultResponseModel();
+            var tranDateTime = DateTimeUtility.GetDateTimeThai();
+
+            try
+            {
+                var inventoryIds = update.Select(obj => obj.InventoryId).ToList();
+
+                var invntories = (from q in dbContext.ProductInventories
+                                  where inventoryIds.Contains(q.Id)
+                                  select q).ToList();
+
+                // update
+
+                for(int i =0; i < invntories.Count; i++)
+                {
+                    invntories[i].Quantity = invntories[i].Quantity - update.Where(obj => obj.InventoryId == invntories[i].Id).FirstOrDefault().InventoryQty;
+
+                    if(invntories[i].Quantity < 0)
+                    {
+                        response.ErrorCode = "UI0001";
+                        response.ErrorMessage = "Out of stock.";
+                    }
+
+                    invntories[i].UpdateBy = "system";
+                    invntories[i].UpdateDate = tranDateTime;
+                }
+
+                dbContext.Set<ProductInventory>().UpdateRange(invntories);
+                dbContext.SaveChanges();
+
+                defaultResponse.message = "Success";
+                response.Item = defaultResponse;
+
+                response.ErrorCode = "0000";
+                response.ErrorMessage = "Success";
+            }
+            catch (Exception ex)
+            {
+                response.ErrorCode = "BE9999";
+                response.ErrorMessage = "Interal server error.";
+            }
+
+            return response;
+        }
     }
 }

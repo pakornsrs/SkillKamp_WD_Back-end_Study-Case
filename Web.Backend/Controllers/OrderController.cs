@@ -46,7 +46,7 @@ namespace Web.Backend.Controllers
 
             try
             {
-                result = purchasedOrderService.PurchastOrder(req.userId, req.orderId, req.paymentType,req.cardId);
+                result = purchasedOrderService.PurchastOrder(req.userId, req.orderId, req.paymentType,req.cardId, req.couponId);
             }
             catch (Exception ex)
             {

@@ -16,8 +16,10 @@ using Web.Backend.DTO;
 using Web.Backend.DTO.CartItem;
 using Web.Backend.DTO.Coupon;
 using Web.Backend.DTO.Enums;
+using Web.Backend.DTO.Inventories;
 using Web.Backend.DTO.Orders;
 using Web.Backend.DTO.PaymentDetail;
+using Web.Backend.DTO.ProductDetails;
 
 namespace Web.Backend.BLL.Services
 {
@@ -28,6 +30,7 @@ namespace Web.Backend.BLL.Services
         private readonly IPaymentDetailService paymentDetailService;
         private readonly IDiscountCouponService discountCouponService;
         private readonly IPurchaseSessionService purchaseSessionService;
+        private readonly IInventoryService inventoryService;
 
 
         private IMapper mapper = new MapperConfiguration(cfg => cfg.AddProfile<ModelMapper>()).CreateMapper();
@@ -36,16 +39,18 @@ namespace Web.Backend.BLL.Services
                                IOrderService orderService,
                                IPaymentDetailService paymentDetailService,
                                IDiscountCouponService discountCouponService,
-                               IPurchaseSessionService purchaseSessionService)
+                               IPurchaseSessionService purchaseSessionService,
+                               IInventoryService inventoryService)
         {
             this.dbContext = dbContext;
             this.orderService = orderService;
             this.paymentDetailService = paymentDetailService;
             this.discountCouponService = discountCouponService;
             this.purchaseSessionService = purchaseSessionService;
+            this.inventoryService = inventoryService;
         }
 
-        public ServiceResponseModel<DefaultResponseModel> PurchastOrder(int userId, int orderId, int paymentType, int cardId)
+        public ServiceResponseModel<DefaultResponseModel> PurchastOrder(int userId, int orderId, int paymentType, int cardId, int? couponId)
         {
             var response = new ServiceResponseModel<DefaultResponseModel>();
             var tranDateTime = DateTimeUtility.GetDateTimeThai();
@@ -142,13 +147,24 @@ namespace Web.Backend.BLL.Services
                     detail.UserId = userId;
                     detail.Amount = orderDetail.TotalAmount;
 
-                    if(orderDetail.CouponId != null && orderDetail.CouponId != 0)
+                    if(couponId != null && couponId != 0)
                     {
                         var couponRespons = discountCouponService.GetCouponById(orderDetail.CouponId.Value);
 
                         if (!couponRespons.IsError)
                         {
+                            var couponUpdateRespons = discountCouponService.UpdateStatusDiscountCoupon(couponId.Value);
+
+                            if (couponRespons.IsError)
+                            {
+                                response.ErrorCode = "PO004";
+                                response.ErrorMessage = couponRespons.ErrorMessage;
+
+                                return response;
+                            }
+
                             couponDetail = couponRespons.Item;
+                            
                         }
                         else
                         {
@@ -164,6 +180,34 @@ namespace Web.Backend.BLL.Services
                     dbContext.SaveChanges();
 
                     // Remove item from inventory
+
+                    var queryItem = (from q in dbContext.CartItems
+                                     where q.SessionId == orderDetail.SessionId
+                                     join prodDetail in dbContext.ProductDetails on q.ProductDetailId equals prodDetail.Id
+                                     select new InventoryQtyDTO
+                                     {
+                                         InventoryId = prodDetail.InventoryId.Value,
+                                         InventoryQty = q.Quantity.Value
+
+                                     }).ToList();
+
+                    if (queryItem == null || queryItem.Count <= 0)
+                    {
+                        response.ErrorCode = "PO0004";
+                        response.ErrorMessage = "Cannot update inventory.";
+
+                        return response;
+                    }
+
+                    var updateResult = inventoryService.UpdateInvertory(queryItem);
+
+                    if (updateResult.IsError)
+                    {
+                        response.ErrorCode = "PO0004";
+                        response.ErrorMessage = "Cannot update inventory.";
+
+                        return response;
+                    }
 
                     // Terminate session 
 
