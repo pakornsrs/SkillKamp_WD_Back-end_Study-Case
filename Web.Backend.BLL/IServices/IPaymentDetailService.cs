@@ -10,6 +10,6 @@ namespace Web.Backend.BLL.IServices
 {
     public interface IPaymentDetailService
     {
-        public ServiceResponseModel<PaymentDetailDTO> InsertPaymentDetail(int userId, int orderId, int paymentMethod, int status, int? cardId = null);
+        public ServiceResponseModel<PaymentDetailDTO> InsertPaymentDetail(int userId, int orderId, int paymentMethod, int status, int addressId, string? addressDetail, int? cardId = 0);
     }
 }

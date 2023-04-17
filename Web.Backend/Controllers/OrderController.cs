@@ -47,7 +47,7 @@ namespace Web.Backend.Controllers
 
             try
             {
-                result = purchasedOrderService.PurchastOrder(req.userId, req.orderId, req.paymentType,req.cardId, req.couponId);
+                result = purchasedOrderService.PurchastOrder(req.userId, req.orderId, req.paymentType, req.cardId, req.addressId, req.addressDetail);
             }
             catch (Exception ex)
             {
@@ -59,7 +59,7 @@ namespace Web.Backend.Controllers
 
         [HttpPost()]
         [Route("api/order/history/detail")]
-        public async Task<IActionResult> PurchaseOrder([FromBody] UserIdRequestModel req)
+        public async Task<IActionResult> GetPurchastItemHistory([FromBody] UserIdRequestModel req)
         {
             var result = new ServiceResponseModel<List<PurchastedProductDTO>>();
 

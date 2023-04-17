@@ -10,7 +10,7 @@ namespace Web.Backend.BLL.IServices
 {
     public interface IPurchasedOrderService
     {
-        public ServiceResponseModel<DefaultResponseModel> PurchastOrder(int userId, int orderId, int paymentType, int cardId, int? couponId);
+        public ServiceResponseModel<DefaultResponseModel> PurchastOrder(int userId, int orderId, int paymentType, int cardId, int addressId, string? addressDetail);
         public ServiceResponseModel<List<PurchastedProductDTO>> GetPurchastItemHistory(int userId);
 
 

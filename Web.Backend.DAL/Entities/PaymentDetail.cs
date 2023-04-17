@@ -15,6 +15,10 @@ public partial class PaymentDetail
 
     public int? CardId { get; set; }
 
+    public int? DeliveryAddressId { get; set; }
+
+    public string? AddressDetail { get; set; }
+
     public int? Status { get; set; }
 
     public DateTime? CreateDate { get; set; }

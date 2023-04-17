@@ -26,7 +26,7 @@ namespace Web.Backend.BLL.Services
             this.dbContext = dbContext;
         }
 
-        public ServiceResponseModel<PaymentDetailDTO> InsertPaymentDetail(int userId, int orderId, int paymentMethod, int status, int? cardId = 0)
+        public ServiceResponseModel<PaymentDetailDTO> InsertPaymentDetail(int userId, int orderId, int paymentMethod, int status, int addressId, string? addressDetail, int? cardId = 0)
         {
             var response = new ServiceResponseModel<PaymentDetailDTO>();
             var tranDateTime = DateTimeUtility.GetDateTimeThai();
@@ -40,6 +40,8 @@ namespace Web.Backend.BLL.Services
                 detail.PaymentMethod = paymentMethod;
                 detail.Status = status;
                 detail.CardId = cardId;
+                detail.DeliveryAddressId = addressId;
+                detail.AddressDetail = addressDetail;
                 detail.CreateDate = tranDateTime;
                 detail.UpdateDate = tranDateTime;
                 detail.CreateBy = "system";

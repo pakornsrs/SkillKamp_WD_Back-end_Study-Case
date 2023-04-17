@@ -17,5 +17,6 @@ namespace Web.Backend.BLL.IServices
         public ServiceResponseModel<DefaultResponseModel> UpdateStatusDiscountCoupon(int couponId);
 
         public ServiceResponseModel<DiscountCouponDTO> GetCouponById(int couponId);
+        public ServiceResponseModel<List<DiscountCouponDTO>> GetUserCoupon(int userId);
     }
 }

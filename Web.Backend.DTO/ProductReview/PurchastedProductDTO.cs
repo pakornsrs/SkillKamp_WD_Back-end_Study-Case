@@ -26,6 +26,8 @@ namespace Web.Backend.DTO.ProductReview
         public string? ImagePath { get; set; }
         public string ColorCode { get; set; }
         public int Quantity { get; set; }
+        public string PurchastDate { get; set; }
+        public string PurchastTime { get; set; }
         public bool IsReview => ReviewDetail != null;
         public ProductReviewDTO? ReviewDetail { get; set; }
     }

@@ -260,6 +260,30 @@ namespace Web.Backend.BLL.Services
             return response;
         }
 
+        public ServiceResponseModel<List<DiscountCouponDTO>> GetUserCoupon(int userId)
+        {
+            var response = new ServiceResponseModel<List<DiscountCouponDTO>>();
+            var tranDateTime = DateTimeUtility.GetDateTimeThai();
+
+            try
+            {
+                var query = (from q in dbContext.DiscountCoupons
+                             where (q.UserId == userId && (q.Limitation > q.UseCount) && (q.ExpireDate > tranDateTime))
+                                    || (q.Type == 0 && (q.Limitation > q.UseCount) && (q.ExpireDate > tranDateTime))
+                             select q).ToList();
+
+                response.Item = mapper.Map<List<DiscountCouponDTO>>(query);
+                response.ErrorCode = "0000";
+                response.ErrorMessage = "Success";
+            }
+            catch (Exception ex)
+            {
+                response.ErrorCode = "BE9999";
+                response.ErrorMessage = "Internal server error.";
+            }
+
+            return response;
+        }
         private string GenerateCouponNumber()
         {
             Guid myuuid = Guid.NewGuid();

@@ -14,6 +14,7 @@ namespace Web.Backend.DTO.Coupon
         public int? Type { get; set; }
         public decimal? PercentDiscount { get; set; }
         public DateTime? ExpireDate { get; set; }
+        public string? ExpireDateText => ExpireDate.Value.ToString("dd/MMM/yyyy");
         public int? UseCount { get; set; }
         public int? Limitation { get; set; }
     }

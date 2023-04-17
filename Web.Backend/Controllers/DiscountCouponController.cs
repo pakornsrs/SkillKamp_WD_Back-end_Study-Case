@@ -6,6 +6,7 @@ using Web.Backend.DTO;
 using Web.Backend.Models;
 using Web.Backend.Models.DiscountCoupon;
 using Web.Backend.DTO.Enums;
+using Web.Backend.DTO.Coupon;
 
 namespace Web.Backend.Controllers
 {
@@ -45,6 +46,24 @@ namespace Web.Backend.Controllers
             try
             {
                 result = discountCouponService.ApplyDiscountCoupon(req.UserId, req.OrderId, req.CouponCode);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return StatusCode(200, result);
+        }
+
+        [HttpPost()]
+        [Route("api/coupon/get")]
+        public async Task<IActionResult> GetUserCoupon([FromBody] UserIdRequestModel req)
+        {
+            var result = new ServiceResponseModel<List<DiscountCouponDTO>>();
+
+            try
+            {
+                result = discountCouponService.GetUserCoupon(req.userId);
             }
             catch (Exception ex)
             {

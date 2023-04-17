@@ -54,7 +54,7 @@ namespace Web.Backend.BLL.Services
             this.inventoryService = inventoryService;
         }
 
-        public ServiceResponseModel<DefaultResponseModel> PurchastOrder(int userId, int orderId, int paymentType, int cardId, int? couponId)
+        public ServiceResponseModel<DefaultResponseModel> PurchastOrder(int userId, int orderId, int paymentType, int cardId, int addressId, string? addressDetail)
         {
             var response = new ServiceResponseModel<DefaultResponseModel>();
             var tranDateTime = DateTimeUtility.GetDateTimeThai();
@@ -126,7 +126,7 @@ namespace Web.Backend.BLL.Services
 
                     // Add payment detail
 
-                    var paymentDetailResponse = paymentDetailService.InsertPaymentDetail(userId, orderDetail.Id, paymentType, (int)paymentStatus, (int)PaymentType.CreditCard == paymentType ? cardId : null);
+                    var paymentDetailResponse = paymentDetailService.InsertPaymentDetail(userId, orderDetail.Id, paymentType, (int)paymentStatus, addressId, addressDetail ,(int)PaymentType.CreditCard == paymentType ? cardId : null);
 
                     if (!paymentDetailResponse.IsError && paymentDetailResponse.Item != null)
                     {
@@ -151,13 +151,13 @@ namespace Web.Backend.BLL.Services
                     detail.UserId = userId;
                     detail.Amount = orderDetail.TotalAmount;
 
-                    if(couponId != null && couponId != 0)
+                    if(orderDetail.CouponId != null && orderDetail.CouponId != 0)
                     {
                         var couponRespons = discountCouponService.GetCouponById(orderDetail.CouponId.Value);
 
                         if (!couponRespons.IsError)
                         {
-                            var couponUpdateRespons = discountCouponService.UpdateStatusDiscountCoupon(couponId.Value);
+                            var couponUpdateRespons = discountCouponService.UpdateStatusDiscountCoupon(orderDetail.CouponId.Value);
 
                             if (couponRespons.IsError)
                             {
@@ -292,6 +292,8 @@ namespace Web.Backend.BLL.Services
 
                     foreach(var item in cartItems)
                     {
+                        var datetime = Convert.ToDateTime(queryRecord.Where(obj => obj.OrderId == item.OrderId).FirstOrDefault().CreateDate);
+
                         var queryDetail = (from detail in dbContext.ProductDetails
                                            where detail.Id == item.productDetailId
                                            join prod in dbContext.Products on detail.ProductId equals prod.Id
@@ -306,7 +308,7 @@ namespace Web.Backend.BLL.Services
                                                ProductNameEn = prod.ProductNameEn,
                                                DescTh = prod.DescTh,
                                                DescEn = prod.DescEn,
-                                               Price = detail.Price,
+                                               Price = detail.Price * item.Quantity,
                                                SizeId = size.Id,
                                                SizeDescTh = size.SizeDescTh,
                                                SizeDescEn = size.SizeDescEn,
@@ -315,6 +317,8 @@ namespace Web.Backend.BLL.Services
                                                ColorDescEn = color.ColorNameEn,
                                                ImagePath = detail.ImagePath,
                                                ColorCode = color.ColorCode,
+                                               PurchastDate = datetime.ToString("dd/MMM/yyyy"),
+                                               PurchastTime = datetime.ToString("HH:mm:ss")
                                            }).FirstOrDefault();
 
                         if (queryDetail != null) result.Add(queryDetail);
