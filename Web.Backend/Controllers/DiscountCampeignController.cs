@@ -5,9 +5,11 @@ using Web.Backend.DTO.Cards;
 using Web.Backend.DTO;
 using Web.Backend.Models.Campeigns;
 using Web.Backend.DTO.Campeigns;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Backend.Controllers
 {
+    [Authorize]
     public class DiscountCampeignController : Controller
     {
         private readonly IDiscountCampeignService discountCampeignService;

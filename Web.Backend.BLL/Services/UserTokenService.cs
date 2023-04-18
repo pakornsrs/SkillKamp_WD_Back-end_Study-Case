@@ -25,70 +25,70 @@ namespace Web.Backend.BLL.Services
             this.dbContext = dbContext;
         }
 
-        public ServiceResponseModel<UserTokenDTO> CreateUserToken(int userId, string username, string role)
-        {
-            var response = new ServiceResponseModel<UserTokenDTO>();
-            var tranDateTime = DateTimeUtility.GetDateTimeThai();
+        //public ServiceResponseModel<UserTokenDTO> CreateUserToken(int userId, string username, string role)
+        //{
+        //    var response = new ServiceResponseModel<UserTokenDTO>();
+        //    var tranDateTime = DateTimeUtility.GetDateTimeThai();
 
-            try
-            {
-                var token = JWTUtility.GenerateToken(userId.ToString(), username, role, tranDateTime.AddHours(2));
+        //    try
+        //    {
+        //        var token = JWTUtility.GenerateToken(userId.ToString(), username, role, tranDateTime.AddHours(2));
 
-                var userToken = new UserToken();
-                userToken.Token = token;
-                userToken.CreateDate = tranDateTime;
-                userToken.Expire = tranDateTime.AddHours(2);
-                userToken.UpdateDate = tranDateTime;
-                userToken.CreateBy = "system";
-                userToken.UpdateBy = "system";
+        //        var userToken = new UserToken();
+        //        userToken.Token = token;
+        //        userToken.CreateDate = tranDateTime;
+        //        userToken.Expire = tranDateTime.AddHours(2);
+        //        userToken.UpdateDate = tranDateTime;
+        //        userToken.CreateBy = "system";
+        //        userToken.UpdateBy = "system";
 
-                dbContext.Set<UserToken>().Add(userToken);
-                dbContext.SaveChanges();
+        //        dbContext.Set<UserToken>().Add(userToken);
+        //        dbContext.SaveChanges();
 
-                response.Item = mapper.Map<UserTokenDTO>(userToken);
+        //        response.Item = mapper.Map<UserTokenDTO>(userToken);
 
-                response.ErrorCode = "0000";
-                response.ErrorMessage = "Success";
-            }
-            catch (Exception ex)
-            {
-                response.ErrorCode = "BE9999";
-                response.ErrorMessage = "Interal server error.";
-            }
+        //        response.ErrorCode = "0000";
+        //        response.ErrorMessage = "Success";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        response.ErrorCode = "BE9999";
+        //        response.ErrorMessage = "Interal server error.";
+        //    }
 
-            return response;
-        }
+        //    return response;
+        //}
 
-        public ServiceResponseModel<UserTokenDTO> UpdateUserToken(int tokenId)
-        {
-            var response = new ServiceResponseModel<UserTokenDTO>();
-            var tranDateTime = DateTimeUtility.GetDateTimeThai();
+        //public ServiceResponseModel<UserTokenDTO> UpdateUserToken(int tokenId)
+        //{
+        //    var response = new ServiceResponseModel<UserTokenDTO>();
+        //    var tranDateTime = DateTimeUtility.GetDateTimeThai();
 
-            try
-            {
-                var tokenQuery = (from q in this.dbContext.UserTokens
-                                  where q.Id == tokenId
-                                  select q).FirstOrDefault();
+        //    try
+        //    {
+        //        var tokenQuery = (from q in this.dbContext.UserTokens
+        //                          where q.Id == tokenId
+        //                          select q).FirstOrDefault();
 
-                tokenQuery.UpdateDate = tranDateTime;
-                tokenQuery.Expire = tranDateTime.AddHours(2);
-                tokenQuery.UpdateBy = "system";
+        //        tokenQuery.UpdateDate = tranDateTime;
+        //        tokenQuery.Expire = tranDateTime.AddHours(2);
+        //        tokenQuery.UpdateBy = "system";
 
-                dbContext.Set<UserToken>().Update(tokenQuery);
-                dbContext.SaveChanges();
+        //        dbContext.Set<UserToken>().Update(tokenQuery);
+        //        dbContext.SaveChanges();
 
-                response.Item = mapper.Map<UserTokenDTO>(tokenQuery);
+        //        response.Item = mapper.Map<UserTokenDTO>(tokenQuery);
 
-                response.ErrorCode = "0000";
-                response.ErrorMessage = "Success";
-            }
-            catch (Exception ex)
-            {
-                response.ErrorCode = "BE9999";
-                response.ErrorMessage = "Interal server error.";
-            }
+        //        response.ErrorCode = "0000";
+        //        response.ErrorMessage = "Success";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        response.ErrorCode = "BE9999";
+        //        response.ErrorMessage = "Interal server error.";
+        //    }
 
-            return response;
-        }
+        //    return response;
+        //}
     }
 }

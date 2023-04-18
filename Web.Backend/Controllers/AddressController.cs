@@ -5,9 +5,11 @@ using Web.Backend.DTO;
 using Web.Backend.Models.Users;
 using Web.Backend.Models;
 using Web.Backend.DTO.Addresses;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Backend.Controllers
 {
+    [Authorize]
     public class AddressController : Controller
     {
         private readonly IUserAddressService userAddressServicce;

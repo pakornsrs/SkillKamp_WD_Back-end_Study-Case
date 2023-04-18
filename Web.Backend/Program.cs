@@ -1,10 +1,16 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using Web.Backend.BLL.IServices;
 using Web.Backend.BLL.Services;
 using Web.Backend.DAL;
+using Web.Backend.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddJsonFile("appsettings.json", optional: true);
 
 // Add services to the container.
 
@@ -52,10 +58,50 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IPurchasedOrderService, PurchasedOrderService>();
 builder.Services.AddScoped<IPaymentDetailService, PaymentDetailService>();
 builder.Services.AddScoped<IDiscountCouponService, DiscountCouponService>();
+//builder.Services.AddScoped<IUserTokenService, UserTokenService>();
+builder.Services.AddScoped<JwtConfig, JwtConfig>();
 #endregion
 
-//var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-//builder.Services.AddJwtAuthentication(configuration);
+var JwtConfig = builder.Configuration.GetSection("Jwt").Get<JwtConfig>();
+
+builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("Jwt"));
+
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//}).AddJwtBearer(options =>
+//{
+//    options.RequireHttpsMetadata = false;
+//    options.SaveToken = true;
+//    options.TokenValidationParameters = new TokenValidationParameters
+//    {
+//        ValidateIssuerSigningKey = true,
+//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtConfig.Key)),
+//        ValidateIssuer = false,
+//        ValidateAudience = false
+//    };
+//});
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtConfig.Key)),
+        ValidateIssuer = true,
+        ValidIssuer = JwtConfig.Issuer,
+        ValidateAudience = true,
+        ValidAudience = JwtConfig.Audience,       
+    };
+});
+builder.Services.AddAuthorization();
+
 
 var app = builder.Build();
 
@@ -70,6 +116,7 @@ app.UseCors("CorsPolicy");
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

@@ -113,27 +113,27 @@ namespace Web.Backend.BLL.Services
 
                     // Generate Token and insert to table [User_Token]
 
-                    var userTokenServiceResponse = userTokenService.CreateUserToken(user.Id, user.Username, "webuser");
+                    //var userTokenServiceResponse = userTokenService.CreateUserToken(user.Id, user.Username, "webuser");
 
-                    if (userTokenServiceResponse.IsError)
-                    {
-                        response.ErrorCode = "RE0004";
-                        response.ErrorMessage = "Cannot create user token.";
+                    //if (userTokenServiceResponse.IsError)
+                    //{
+                    //    response.ErrorCode = "RE0004";
+                    //    response.ErrorMessage = "Cannot create user token.";
 
-                        return response;
-                    }
+                    //    return response;
+                    //}
 
-                    var userToken = userTokenServiceResponse.Item;
+                    //var userToken = userTokenServiceResponse.Item;
 
                     //Update data for tabel[User]
 
 
-                   user.UserTokenId = userToken.Id;
-                   dbContext.Set<User>().Update(user);
-                   dbContext.SaveChanges();
+                   //user.UserTokenId = userToken.Id;
+                   //dbContext.Set<User>().Update(user);
+                   //dbContext.SaveChanges();
 
-                    response.Item = mapper.Map<RegistrationDTO>(user);
-                    response.Item.UserToken = userToken.Token;
+                   // response.Item = mapper.Map<RegistrationDTO>(user);
+                   // response.Item.UserToken = userToken.Token;
 
                     response.ErrorCode = "0000";
                     response.ErrorMessage = "Success";
@@ -180,22 +180,22 @@ namespace Web.Backend.BLL.Services
                     }
 
                     // Update user token
-                    var tokenServiceResponse = userTokenService.UpdateUserToken(userQuery.UserTokenId.Value);
+                    //var tokenServiceResponse = userTokenService.UpdateUserToken(userQuery.UserTokenId.Value);
 
-                    if (tokenServiceResponse.IsError)
-                    {
-                        response.ErrorCode = "LO0002";
-                        response.ErrorMessage = "User token not found.";
+                    //if (tokenServiceResponse.IsError)
+                    //{
+                    //    response.ErrorCode = "LO0002";
+                    //    response.ErrorMessage = "User token not found.";
 
-                        return response;
-                    }
+                    //    return response;
+                    //}
 
-                    var token = tokenServiceResponse.Item;
+                    //var token = tokenServiceResponse.Item;
 
                     var user = mapper.Map<UserLoginDTO>(userQuery);
 
                     userDetail.User = user;
-                    userDetail.UserToken = token.Token;
+                    //userDetail.UserToken = token.Token;
 
                     response.Item = userDetail;
 

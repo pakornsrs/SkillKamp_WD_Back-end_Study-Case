@@ -7,15 +7,21 @@ using Web.Backend.Models.Users;
 using Web.Backend.DTO.Users;
 using Web.Backend.DTO.Enums;
 using ActionResult = Web.Backend.DTO.Enums.ActionResult;
+using Web.Backend.Jwt;
+using Web.Backend.BLL.UtilityMethods;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Web.Backend.Controllers
 {
     public class UserController : Controller
     {
         private readonly IUserService userService;
-        public UserController(IUserService userService)
+        private readonly JwtConfig jwtConfig;
+        public UserController(IUserService userService, IOptions<JwtConfig> jwtConfig)
         {
             this.userService = userService;
+            this.jwtConfig = jwtConfig.Value;
         }
 
         [HttpPost()]
@@ -45,6 +51,16 @@ namespace Web.Backend.Controllers
             try
             {
                 result = userService.Login(req.Username, req.Password);
+
+                if(!result.IsError)
+                {
+                    var test = jwtConfig;
+                    var user = result.Item.User;
+                    var jwt = new JwtTokenGenerator(); 
+                    var token = jwt.GenerateToken(user.Id, req.Username, "user", DateTimeUtility.GetDateTimeThai().AddMinutes(2),jwtConfig);
+
+                    result.Item.UserToken = token;
+                }
             }
             catch (Exception ex)
             {

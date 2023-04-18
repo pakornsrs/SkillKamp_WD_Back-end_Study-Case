@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Web.Backend.BLL.IServices;
 using Web.Backend.BLL.Services;
 using Web.Backend.DTO;
@@ -10,6 +11,7 @@ using Web.Backend.Models.Products;
 
 namespace Web.Backend.Controllers
 {
+    [Authorize]
     public class OrderController : Controller
     {
         private readonly IOrderService orderService;

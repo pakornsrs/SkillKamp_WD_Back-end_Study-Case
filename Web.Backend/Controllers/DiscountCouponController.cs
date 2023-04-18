@@ -7,9 +7,11 @@ using Web.Backend.Models;
 using Web.Backend.Models.DiscountCoupon;
 using Web.Backend.DTO.Enums;
 using Web.Backend.DTO.Coupon;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Backend.Controllers
 {
+    [Authorize]
     public class DiscountCouponController : Controller
     {
         private readonly IDiscountCouponService discountCouponService;

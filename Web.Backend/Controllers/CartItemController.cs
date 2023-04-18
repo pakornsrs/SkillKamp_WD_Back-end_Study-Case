@@ -7,9 +7,11 @@ using Web.Backend.Models.Campeigns;
 using Web.Backend.Models.CartItems;
 using Web.Backend.DTO.CartItem;
 using Web.Backend.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Backend.Controllers
 {
+    [Authorize]
     public class CartItemController : Controller
     {
         private readonly ICartItemService cartItemService;

@@ -12,6 +12,7 @@ using Web.Backend.Models;
 
 namespace Web.Backend.Controllers
 {
+    [Authorize]
     public class CardController : Controller
     {
         private readonly IUserCardService userCardService;

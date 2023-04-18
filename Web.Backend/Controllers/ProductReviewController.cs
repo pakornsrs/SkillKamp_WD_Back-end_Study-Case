@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Web.Backend.BLL.IServices;
 using Web.Backend.DTO;
 using Web.Backend.Models.ProductReview;
@@ -6,6 +7,7 @@ using Web.Backend.Models.Users;
 
 namespace Web.Backend.Controllers
 {
+    [Authorize]
     public class ProductReviewController : Controller
     {
         private readonly IProductReviewService productReviewService;

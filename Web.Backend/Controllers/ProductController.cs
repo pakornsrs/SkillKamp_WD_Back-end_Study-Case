@@ -9,9 +9,11 @@ using Web.Backend.Models;
 using Web.Backend.DTO.ProductSizes;
 using Web.Backend.DTO.ProductColors;
 using Web.Backend.DTO.Category;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Backend.Controllers
 {
+    [Authorize]
     public class ProductController : Controller
     {
         private readonly IProductService productService;
@@ -70,6 +72,7 @@ namespace Web.Backend.Controllers
 
         [HttpPost()]
         [Route("api/product/search")]
+        [AllowAnonymous]
         public async Task<IActionResult> SerchProductByKeyword([FromBody] SearchProductRequestMode req)
         {
             var result = new ServiceResponseModel<List<ProductSearchResultDTO>>();
@@ -88,6 +91,7 @@ namespace Web.Backend.Controllers
 
         [HttpGet()]
         [Route("api/product/new")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetNewArrival()
         {
             var result = new ServiceResponseModel<List<ProductSearchResultDTO>>();
@@ -106,6 +110,7 @@ namespace Web.Backend.Controllers
 
         [HttpPost()]
         [Route("api/product/detail/get")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetProductFullDetail([FromBody] ProductIdRequestModel req)
         {
             var result = new ServiceResponseModel<ProductSearchResultDTO>();
@@ -124,6 +129,7 @@ namespace Web.Backend.Controllers
 
         [HttpGet()]
         [Route("api/product/size/list")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllProductSize()
         {
             var result = new ServiceResponseModel<List<ProductSizeDTO>>();
@@ -142,6 +148,7 @@ namespace Web.Backend.Controllers
 
         [HttpGet()]
         [Route("api/product/color/list")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllProductColor()
         {
             var result = new ServiceResponseModel<List<ProductColorDTO>>();
@@ -160,6 +167,7 @@ namespace Web.Backend.Controllers
         
         [HttpGet()]
         [Route("api/product/category/list")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllProductCategories()
         {
             var result = new ServiceResponseModel<List<ProductCategoryDTO>>();

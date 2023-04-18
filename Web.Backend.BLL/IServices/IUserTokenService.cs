@@ -10,7 +10,7 @@ namespace Web.Backend.BLL.IServices
 {
     public interface IUserTokenService
     {
-        public ServiceResponseModel<UserTokenDTO> CreateUserToken(int userId, string username, string role);
-        public ServiceResponseModel<UserTokenDTO> UpdateUserToken(int tokenId);
+        //public ServiceResponseModel<UserTokenDTO> CreateUserToken(int userId, string username, string role);
+        //public ServiceResponseModel<UserTokenDTO> UpdateUserToken(int tokenId);
     }
 }
