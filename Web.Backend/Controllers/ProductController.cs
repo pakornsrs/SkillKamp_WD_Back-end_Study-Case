@@ -10,6 +10,7 @@ using Web.Backend.DTO.ProductSizes;
 using Web.Backend.DTO.ProductColors;
 using Web.Backend.DTO.Category;
 using Microsoft.AspNetCore.Authorization;
+using Web.Backend.Filters;
 
 namespace Web.Backend.Controllers
 {

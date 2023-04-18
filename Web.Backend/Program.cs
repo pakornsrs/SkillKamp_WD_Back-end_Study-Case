@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Web.Backend.BLL.IServices;
 using Web.Backend.BLL.Services;
+using Web.Backend.BLL.UtilityMethods;
 using Web.Backend.DAL;
 using Web.Backend.Jwt;
 
@@ -83,6 +84,7 @@ builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("Jwt"));
 //    };
 //});
 
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -97,7 +99,12 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuer = true,
         ValidIssuer = JwtConfig.Issuer,
         ValidateAudience = true,
-        ValidAudience = JwtConfig.Audience,       
+        ValidAudience = JwtConfig.Audience,
+        //ValidateLifetime = true,
+        //LifetimeValidator = (DateTime? notBefore, DateTime? expires, SecurityToken securityToken, TokenValidationParameters validationParameters) =>
+        //{
+        //    return expires != null && expires > DateTimeUtility.GetDateTimeThai();
+        //},
     };
 });
 builder.Services.AddAuthorization();
