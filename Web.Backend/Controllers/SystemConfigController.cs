@@ -1,19 +1,60 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Web.Backend.BLL.IServices;
 using Web.Backend.BLL.Services;
+using Web.Backend.BLL.UtilityMethods;
 using Web.Backend.DTO;
 using Web.Backend.DTO.Config;
 using Web.Backend.Filters;
+using Web.Backend.Jwt;
 
 namespace Web.Backend.Controllers
 {
     public class SystemConfigController : Controller
     {
         private readonly ISystemConfigService systemConfigService;
-        public SystemConfigController(ISystemConfigService systemConfigService)
+        private readonly JwtConfig jwtConfig;
+        public SystemConfigController(ISystemConfigService systemConfigService, IOptions<JwtConfig> jwtConfig)
         {
             this.systemConfigService = systemConfigService;
+            this.jwtConfig = jwtConfig.Value;
+        }
+
+        /// <summary>
+        /// (To create jet token)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///     Use to create token for setvice testing.
+        ///     
+        /// </remarks>
+        [HttpGet()]
+        //[TypeFilter(typeof(TokenLifetimeFilter))]
+        [Route("api/config/token")]
+        public async Task<IActionResult> CreateToken()
+        {
+            var result = new ServiceResponseModel<string>();
+
+            try
+            {
+                var jwt = new JwtTokenGenerator();
+                var expireDate = DateTimeUtility.GetDateTimeThai().AddHours(12);
+
+                var token = jwt.GenerateToken(999, "test-token", "test-token", expireDate, jwtConfig);
+
+                result.Item = token;
+                result.ErrorCode = "0000";
+                result.ErrorMessage = "success";
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return StatusCode(200, result);
         }
 
         [HttpGet()]

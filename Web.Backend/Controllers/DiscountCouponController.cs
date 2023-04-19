@@ -29,10 +29,11 @@ namespace Web.Backend.Controllers
         /// 
         ///    This api use to cheate discount coupon.
         ///    The type of counpon defined by 0 = coupon for all user, 1  = coupon for specific user Id.
-        /////    However, this service currently have no UI so you can try this api using Postman.
+        ///    However, this service currently have no UI so you can try this api using Postman.
         ///     
         /// </remarks>
         [HttpPost()]
+        [Authorize]
         [Route("api/coupon/create")]
         public async Task<IActionResult> GenerateDiscountCoupon([FromBody] GeneratCouponRequestModel req)
         {

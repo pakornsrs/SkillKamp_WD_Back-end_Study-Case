@@ -191,7 +191,6 @@ namespace Web.Backend.BLL.Services
             {
                 var query = (from q in dbContext.Orders
                              where orderIds.Contains(q.Id)
-                                && q.Status != EnumUtility.GetEnumDescription(OrderStatus.Success)
                              select q).ToList();
 
                 var result = mapper.Map<List<OrderDTO>>(query);

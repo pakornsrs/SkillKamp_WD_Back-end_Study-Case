@@ -335,25 +335,6 @@ namespace Web.Backend.BLL.Services
                 response.ErrorCode = "BE9999";
                 response.ErrorMessage = "Internal server error.";
 
-                exceptionMessage = ex.Message;
-            }
-            finally
-            {
-                var activityLog = new ActivityLog();
-
-                activityLog.UserId = null;
-                activityLog.Activity = (int) ActivityType.NewArrival;
-                activityLog.ActivityDesc = EnumUtility.GetEnumDescription(ActivityType.NewArrival);
-                activityLog.Status = response.IsError ? 0 : 1;
-                activityLog.ErrorCode = response.ErrorCode;
-                activityLog.ErrorMessage = response.ErrorMessage;
-                activityLog.ExceptionMessage = exceptionMessage;
-                activityLog.CreateDate = tranDateTime.ToString("yyyy-MM-dd HH:mm:ss");
-                activityLog.CreateBy = "system";
-
-                dbContext.Set<ActivityLog>().Add(activityLog);
-                dbContext.SaveChanges();
-
             }
 
             return response;
