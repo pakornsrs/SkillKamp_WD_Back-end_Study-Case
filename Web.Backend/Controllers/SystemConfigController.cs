@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Web.Backend.BLL.IServices;
 using Web.Backend.BLL.Services;
 using Web.Backend.DTO;
 using Web.Backend.DTO.Config;
+using Web.Backend.Filters;
 
 namespace Web.Backend.Controllers
 {
@@ -18,11 +20,51 @@ namespace Web.Backend.Controllers
         [Route("api/config/api-version")]
         public async Task<IActionResult> GetServiceVersion()
         {
-            var result = new ServiceResponseModel<GetServiceVersionDTO>();
+            var result = new ServiceResponseModel<GetConfigDTO<string>>();
 
             try
             {
                 result = systemConfigService.GetVersion();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return StatusCode(200, result);
+        }
+
+        [HttpGet()]
+        [Route("api/config/slide/path")]
+        public async Task<IActionResult> GetSlide()
+        {
+            var result = new ServiceResponseModel<GetConfigDTO<List<string>>>();
+
+            try
+            {
+                result = systemConfigService.GetSlideImgPath();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return StatusCode(200, result);
+        }
+
+        [HttpGet()]
+        [Authorize]
+        //[TypeFilter(typeof(TokenLifetimeFilter))]
+        [Route("api/config/token/check")]
+        public async Task<IActionResult> GetTokenValidCheck()
+        {
+            var result = new ServiceResponseModel<bool>();
+
+            try
+            {
+                result.ErrorCode = "0000";
+                result.ErrorMessage = "Token is valid";
+                result.Item = true;
             }
             catch (Exception ex)
             {

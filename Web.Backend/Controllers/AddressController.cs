@@ -18,6 +18,16 @@ namespace Web.Backend.Controllers
             this.userAddressServicce = userAddressServicce;
         }
 
+        /// <summary>
+        /// (To get user registed address)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///     To get the addresses that user gives on the registration process. 
+        ///     The addresses will be displayed on product summary page then user can select them for deliver address.
+        ///     
+        /// </remarks>
         [HttpPost()]
         [Route("api/address/get")]
         public async Task<IActionResult> GetAddressByUserId([FromBody] UserIdRequestModel req)

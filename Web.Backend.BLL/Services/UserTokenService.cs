@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Web.Backend.BLL.UtilityMethods;
-using Web.Backend.DAL.Entities;
 using Web.Backend.DAL;
 using Web.Backend.DTO.Inventories;
 using Web.Backend.BLL.ModelMappers;

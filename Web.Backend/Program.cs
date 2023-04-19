@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text;
 using Web.Backend.BLL.IServices;
 using Web.Backend.BLL.Services;
@@ -18,7 +20,17 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: true);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+//builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+
+    // Set the comments path for the Swagger JSON and UI.
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+});
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<SkillkampWdStudyCaseDbContext>(x => x.UseSqlServer(connectionString));
@@ -100,11 +112,11 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = JwtConfig.Issuer,
         ValidateAudience = true,
         ValidAudience = JwtConfig.Audience,
-        //ValidateLifetime = true,
-        //LifetimeValidator = (DateTime? notBefore, DateTime? expires, SecurityToken securityToken, TokenValidationParameters validationParameters) =>
-        //{
-        //    return expires != null && expires > DateTimeUtility.GetDateTimeThai();
-        //},
+        ValidateLifetime = true,
+        LifetimeValidator = (DateTime? notBefore, DateTime? expires, SecurityToken securityToken, TokenValidationParameters validationParameters) =>
+        {
+            return expires != null && expires > DateTimeUtility.GetDateTimeThai();
+        },
     };
 });
 builder.Services.AddAuthorization();

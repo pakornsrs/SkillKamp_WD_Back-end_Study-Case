@@ -27,10 +27,6 @@ namespace Web.Backend.Filters
 
                 var expireDate = JwtDecoder.ReadExpiredate(token);
 
-                if(expireDate < DateTimeUtility.GetDateTimeThai())
-                {
-                    throw new TokenLifetimeException("Token is expired");
-                }
 
             }
         }

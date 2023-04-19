@@ -10,6 +10,7 @@ namespace Web.Backend.BLL.IServices
 {
     public interface ISystemConfigService
     {
-        public ServiceResponseModel<GetServiceVersionDTO> GetVersion();
+        public ServiceResponseModel<GetConfigDTO<string>> GetVersion();
+        public ServiceResponseModel<GetConfigDTO<List<string>>> GetSlideImgPath();
     }
 }

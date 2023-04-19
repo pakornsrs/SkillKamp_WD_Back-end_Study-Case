@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,5 +21,6 @@
     <ProjectReference Include="..\Web.Backend.DAL\Web.Backend.DAL.csproj" />
     <ProjectReference Include="..\Web.Backend.DTO\Web.Backend.DTO.csproj" />
   </ItemGroup>
+
 
 </Project>

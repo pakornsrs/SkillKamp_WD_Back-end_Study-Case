@@ -60,6 +60,23 @@ namespace Web.Backend.Controllers
         }
 
         [HttpPost()]
+        [Route("api/order/cancel")]
+        public async Task<IActionResult> CancelOrder([FromBody] OrderIdRequestModel req)
+        {
+            var result = new ServiceResponseModel<bool>();
+
+            try
+            {
+                result = orderService.CancelOrder(req.OrderId);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return StatusCode(200, result);
+        }
+
+        [HttpPost()]
         [Route("api/order/history/detail")]
         public async Task<IActionResult> GetPurchastItemHistory([FromBody] UserIdRequestModel req)
         {

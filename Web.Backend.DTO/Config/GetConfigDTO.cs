@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Web.Backend.DTO.Config
 {
-    public class GetServiceVersionDTO
+    public class GetConfigDTO<T>
     {
-        public string Version { get; set; }
+        public T Data { get; set; }
         public string DescTh { get; set; }
         public string DescEn { get; set; }
         public DateTime? UpdateDate { get; set; }

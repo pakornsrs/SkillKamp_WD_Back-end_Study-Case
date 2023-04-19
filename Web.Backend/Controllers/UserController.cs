@@ -51,13 +51,14 @@ namespace Web.Backend.Controllers
             try
             {
                 result = userService.Login(req.Username, req.Password);
+                var expireDate = DateTimeUtility.GetDateTimeThai().AddHours(12);
 
-                if(!result.IsError)
+                if (!result.IsError)
                 {
                     var test = jwtConfig;
                     var user = result.Item.User;
                     var jwt = new JwtTokenGenerator(); 
-                    var token = jwt.GenerateToken(user.Id, req.Username, "user", DateTimeUtility.GetDateTimeThai().AddMinutes(2),jwtConfig);
+                    var token = jwt.GenerateToken(user.Id, req.Username, "user", expireDate, jwtConfig);
 
                     result.Item.UserToken = token;
                 }

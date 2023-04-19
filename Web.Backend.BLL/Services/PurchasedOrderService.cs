@@ -217,6 +217,10 @@ namespace Web.Backend.BLL.Services
 
                     var terminateResponse = purchaseSessionService.TerminatePurchastSession(orderDetail.SessionId.Value);
 
+                    // update order status
+
+                    orderService.UpdateOrderStatus(orderDetail.Id, OrderStatus.Success);
+
                     var result = new DefaultResponseModel();
                     result.message = "Response success";
 

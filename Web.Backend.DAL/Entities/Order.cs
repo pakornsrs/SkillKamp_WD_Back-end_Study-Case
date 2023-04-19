@@ -17,6 +17,8 @@ public partial class Order
 
     public int? CouponId { get; set; }
 
+    public string? Status { get; set; }
+
     public DateTime? CreateDate { get; set; }
 
     public DateTime? UpdateDate { get; set; }

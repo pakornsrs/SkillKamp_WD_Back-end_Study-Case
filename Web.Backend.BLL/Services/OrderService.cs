@@ -14,6 +14,7 @@ using Web.Backend.DAL.Entities;
 using Web.Backend.DTO;
 using Web.Backend.DTO.CartItem;
 using Web.Backend.DTO.Coupon;
+using Web.Backend.DTO.Enums;
 using Web.Backend.DTO.Orders;
 
 namespace Web.Backend.BLL.Services
@@ -94,6 +95,8 @@ namespace Web.Backend.BLL.Services
 
                     var orderQuery = (from q in dbContext.Orders
                                       where q.SessionId == sessionServiceResponse.Item.Id
+                                        && q.Status != EnumUtility.GetEnumDescription(OrderStatus.Success)
+                                        && q.Status != EnumUtility.GetEnumDescription(OrderStatus.Cancel)
                                       select q).FirstOrDefault();
 
                     if (orderQuery != null)
@@ -107,6 +110,8 @@ namespace Web.Backend.BLL.Services
 
                         dbContext.Set<Order>().Update(orderQuery);
                         dbContext.SaveChanges();
+
+                        UpdateOrderStatus(orderQuery.Id, OrderStatus.InProgress);
 
                         response.Item = mapper.Map<OrderDTO>(orderQuery);
                     }
@@ -126,6 +131,8 @@ namespace Web.Backend.BLL.Services
 
                         dbContext.Set<Order>().Add(order);
                         dbContext.SaveChanges();
+
+                        UpdateOrderStatus(order.Id, OrderStatus.InProgress);
 
                         response.Item = mapper.Map<OrderDTO>(order);
                     }
@@ -156,6 +163,8 @@ namespace Web.Backend.BLL.Services
             {
                 var query = (from q in dbContext.Orders
                              where q.Id == orderId
+                                && q.Status != EnumUtility.GetEnumDescription(OrderStatus.Success)
+                                && q.Status != EnumUtility.GetEnumDescription(OrderStatus.Cancel)
                              select q).FirstOrDefault();
 
                 var result = mapper.Map<OrderDTO>(query);
@@ -182,11 +191,58 @@ namespace Web.Backend.BLL.Services
             {
                 var query = (from q in dbContext.Orders
                              where orderIds.Contains(q.Id)
+                                && q.Status != EnumUtility.GetEnumDescription(OrderStatus.Success)
                              select q).ToList();
 
                 var result = mapper.Map<List<OrderDTO>>(query);
 
                 response.Item = result;
+                response.ErrorCode = "0000";
+                response.ErrorMessage = "Success";
+            }
+            catch (Exception ex)
+            {
+                response.ErrorCode = "BE9999";
+                response.ErrorMessage = "Internal server error.";
+            }
+
+            return response;
+        }
+
+        public ServiceResponseModel<bool> CancelOrder (int orderId)
+        {
+            var response = new ServiceResponseModel<bool>();
+            var tranDateTime = DateTimeUtility.GetDateTimeThai();
+
+            try
+            {
+           
+                var query = (from q in dbContext.Orders
+                             where q.Id == orderId
+                             select q).FirstOrDefault();
+
+                var terminate = purchaseSessionService.TerminatePurchastSession(query.SessionId.Value);
+
+                if (terminate.IsError)
+                {
+                    response.ErrorCode = "CO0001";
+                    response.ErrorMessage = "Cannot terminate session order.";
+
+                    return response;
+                }
+
+                var update = UpdateOrderStatus(query.Id,OrderStatus.Cancel);
+
+                if (update.IsError)
+                {
+                    response.ErrorCode = "CO0002";
+                    response.ErrorMessage = "Cannot cancel order.";
+
+                    return response;
+                }
+
+
+                response.Item = true;
                 response.ErrorCode = "0000";
                 response.ErrorMessage = "Success";
             }
@@ -237,6 +293,37 @@ namespace Web.Backend.BLL.Services
                 response.ErrorCode = "0000";
                 response.ErrorMessage = "Success.";
 
+            }
+            catch (Exception ex)
+            {
+                response.ErrorCode = "BE9999";
+                response.ErrorMessage = "Internal server error.";
+            }
+
+            return response;
+        }
+
+        public ServiceResponseModel<OrderDTO> UpdateOrderStatus(int orderId,OrderStatus status)
+        {
+            var response = new ServiceResponseModel<OrderDTO>();
+            var tranDateTime = DateTimeUtility.GetDateTimeThai();
+
+            try
+            {
+                var query = (from q in dbContext.Orders
+                             where q.Id == orderId
+                             select q).FirstOrDefault();
+
+                query.Status = EnumUtility.GetEnumDescription(status);
+
+                dbContext.Set<Order>().Update(query);
+                dbContext.SaveChanges();
+
+                var result = mapper.Map<OrderDTO>(query);
+
+                response.Item = result;
+                response.ErrorCode = "0000";
+                response.ErrorMessage = "Success";
             }
             catch (Exception ex)
             {
