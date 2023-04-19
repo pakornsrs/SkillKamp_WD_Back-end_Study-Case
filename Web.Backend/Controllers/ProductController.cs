@@ -71,6 +71,15 @@ namespace Web.Backend.Controllers
             return StatusCode(200, result);
         }
 
+        /// <summary>
+        /// (To search product name)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///     This api use when user add some keyword in product search panel.
+        ///     
+        /// </remarks>
         [HttpPost()]
         [Route("api/product/search")]
         [AllowAnonymous]
@@ -90,6 +99,15 @@ namespace Web.Backend.Controllers
             return StatusCode(200, result);
         }
 
+        /// <summary>
+        /// (To get new product)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///     This api use to list new available product.
+        ///     
+        /// </remarks>
         [HttpGet()]
         [Route("api/product/new")]
         [AllowAnonymous]
@@ -109,6 +127,15 @@ namespace Web.Backend.Controllers
             return StatusCode(200, result);
         }
 
+        /// <summary>
+        /// (To get product detail)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///     This api use to get full detail aboout sizes, colors and quantity of selected product.
+        ///     
+        /// </remarks>
         [HttpPost()]
         [Route("api/product/detail/get")]
         [AllowAnonymous]
@@ -128,6 +155,15 @@ namespace Web.Backend.Controllers
             return StatusCode(200, result);
         }
 
+        /// <summary>
+        /// (To get size detail)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///     This api use to get detail of product size.
+        ///     
+        /// </remarks>
         [HttpGet()]
         [Route("api/product/size/list")]
         [AllowAnonymous]
@@ -147,6 +183,15 @@ namespace Web.Backend.Controllers
             return StatusCode(200, result);
         }
 
+        /// <summary>
+        /// (To get color detail)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///     This api use to get detail of product colors.
+        ///     
+        /// </remarks>
         [HttpGet()]
         [Route("api/product/color/list")]
         [AllowAnonymous]
@@ -165,7 +210,16 @@ namespace Web.Backend.Controllers
 
             return StatusCode(200, result);
         }
-        
+
+        /// <summary>
+        /// (To get categoriy detail)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///     This api use to get detail of product categories.
+        ///     
+        /// </remarks>
         [HttpGet()]
         [Route("api/product/category/list")]
         [AllowAnonymous]

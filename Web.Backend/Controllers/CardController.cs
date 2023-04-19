@@ -21,6 +21,15 @@ namespace Web.Backend.Controllers
             this.userCardService = userCardService;
         }
 
+        /// <summary>
+        /// (To add credit/debit card on registration)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///     User can add credit/debit card using this path.
+        ///     
+        /// </remarks>
         [HttpPost()]
         [Route("api/card/add")]
         public async Task<IActionResult> AddUserCard([FromBody] AddCardRequestModel req)
@@ -39,6 +48,16 @@ namespace Web.Backend.Controllers
             return StatusCode(200, result);
         }
 
+        /// <summary>
+        /// (To get user registed credit/debit card)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///     To get the credit/debit card that user gives on the registration process. 
+        ///     The cards will be displayed on product summary page then user can select them for payment.
+        ///     
+        /// </remarks>
         [HttpPost()]
         [Route("api/card/get")]
         public async Task<IActionResult> GetCardByUSerId([FromBody] UserIdRequestModel req)

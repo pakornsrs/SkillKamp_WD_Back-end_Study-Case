@@ -20,6 +20,15 @@ namespace Web.Backend.Controllers
             this.cartItemService = cartItemService;
         }
 
+        /// <summary>
+        /// (To add item to cart)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///    This api use when user select some product and add to the cart.
+        ///     
+        /// </remarks>
         [HttpPost()]
         [Route("api/cart/add/new")]
         public async Task<IActionResult> AddNewItemToCart([FromBody] AddItmeRequestModel req)
@@ -38,6 +47,17 @@ namespace Web.Backend.Controllers
             return StatusCode(200, result);
         }
 
+
+        /// <summary>
+        /// (To add number of item in cart)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///    This api use when user add more number of item in cart.
+        ///    However, user cannot add item more than stock quantity.
+        ///     
+        /// </remarks>
         [HttpPost()]
         [Route("api/cart/add/quantity")]
         public async Task<IActionResult> AddItemQuantityToCart([FromBody] AddOrReduceRequestModel req)
@@ -56,6 +76,17 @@ namespace Web.Backend.Controllers
             return StatusCode(200, result);
         }
 
+
+        /// <summary>
+        /// (To reduct number of item in cart)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///    This api use when user add more number of item in cart.
+        ///    However, user cannot reduce item lower than 0.
+        ///     
+        /// </remarks>
         [HttpPost()]
         [Route("api/cart/reduce/quantit")]
         public async Task<IActionResult> ReduceItemQuantityInCart([FromBody] AddOrReduceRequestModel req)
@@ -74,6 +105,15 @@ namespace Web.Backend.Controllers
             return StatusCode(200, result);
         }
 
+        /// <summary>
+        /// (To remove item in cart)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///    This api use when user click remove button then item will be removed from cart.
+        ///     
+        /// </remarks>
         [HttpPost()]
         [Route("api/cart/remove")]
         public async Task<IActionResult> RemoveItemInCart([FromBody] CartItemIdRequestModel req)
@@ -110,6 +150,15 @@ namespace Web.Backend.Controllers
             return StatusCode(200, result);
         }
 
+        /// <summary>
+        /// (To get cart item count)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///    This api use for updating the number that show on cart icon.
+        ///     
+        /// </remarks>
         [HttpPost()]
         [Route("api/card/item/count")]
         public async Task<IActionResult> GetUserCartItemCount([FromBody] UserIdRequestModel req)
@@ -128,6 +177,15 @@ namespace Web.Backend.Controllers
             return StatusCode(200, result);
         }
 
+        /// <summary>
+        /// (To get all cart item)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///    This api use when user click cart icon. it will recieve prodeuct detail for displaying on cart modal.
+        ///     
+        /// </remarks>
         [HttpPost()]
         [Route("api/card/item/get/all")]
         public async Task<IActionResult> GetAllCartProduct([FromBody] UserIdRequestModel req)

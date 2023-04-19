@@ -24,6 +24,15 @@ namespace Web.Backend.Controllers
             this.jwtConfig = jwtConfig.Value;
         }
 
+        /// <summary>
+        /// (To regisrater)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///     This api use when user register to webite.
+        ///     
+        /// </remarks>
         [HttpPost()]
         [Route("api/user/registration")]
         public async Task<IActionResult> Registration([FromBody] RegistrationRequestModel req)
@@ -42,6 +51,15 @@ namespace Web.Backend.Controllers
             return StatusCode(200, result);
         }
 
+        /// <summary>
+        /// (To sign in)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///     This api use when user sign in to webite.
+        ///     
+        /// </remarks>
         [HttpPost()]
         [Route("api/user/login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestModel req)

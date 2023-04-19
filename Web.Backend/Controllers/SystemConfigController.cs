@@ -34,6 +34,15 @@ namespace Web.Backend.Controllers
             return StatusCode(200, result);
         }
 
+        /// <summary>
+        /// (To create review)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///     This api use to get img path that show in slidshow.
+        ///     
+        /// </remarks>
         [HttpGet()]
         [Route("api/config/slide/path")]
         public async Task<IActionResult> GetSlide()
@@ -52,6 +61,15 @@ namespace Web.Backend.Controllers
             return StatusCode(200, result);
         }
 
+        /// <summary>
+        /// (To check Jwt)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///     This api use to check token. if token was expire, force user to sign off from system.
+        ///     
+        /// </remarks>
         [HttpGet()]
         [Authorize]
         //[TypeFilter(typeof(TokenLifetimeFilter))]

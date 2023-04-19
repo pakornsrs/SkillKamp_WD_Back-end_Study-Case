@@ -23,6 +23,15 @@ namespace Web.Backend.Controllers
             this.purchasedOrderService = purchasedOrderService;
         }
 
+        /// <summary>
+        /// (To create an order)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///     To create order detail that disply on product summary page.
+        ///     
+        /// </remarks>
         [HttpPost()]
         [Route("api/order/create")]
         public async Task<IActionResult> CreateProductOrder([FromBody] UserIdRequestModel req)
@@ -41,6 +50,16 @@ namespace Web.Backend.Controllers
             return StatusCode(200, result);
         }
 
+        /// <summary>
+        /// (To confirm an order)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///    To confirm order in summay page and connect to payment process.
+        ///    However, payment status is alway mocked as success.
+        ///     
+        /// </remarks>
         [HttpPost()]
         [Route("api/order/purchase")]
         public async Task<IActionResult> PurchaseOrder([FromBody] PurchaseOrderRequestModel req)
@@ -59,6 +78,15 @@ namespace Web.Backend.Controllers
             return StatusCode(200, result);
         }
 
+        /// <summary>
+        /// (To cancel an order)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///    To cancel order, remove all of item in cart and terminate purchast session.
+        ///     
+        /// </remarks>
         [HttpPost()]
         [Route("api/order/cancel")]
         public async Task<IActionResult> CancelOrder([FromBody] OrderIdRequestModel req)
@@ -76,6 +104,16 @@ namespace Web.Backend.Controllers
             return StatusCode(200, result);
         }
 
+        /// <summary>
+        /// (To get order history)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///    To get order history displayed in purchast history page.
+        ///     
+        /// </remarks>
+        /// 
         [HttpPost()]
         [Route("api/order/history/detail")]
         public async Task<IActionResult> GetPurchastItemHistory([FromBody] UserIdRequestModel req)

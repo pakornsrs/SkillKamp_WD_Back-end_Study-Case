@@ -16,6 +16,15 @@ namespace Web.Backend.Controllers
             this.productReviewService = productReviewService;
         }
 
+        /// <summary>
+        /// (To create review)
+        /// </summary>
+        /// <remarks>
+        /// Detail
+        /// 
+        ///     This api use when user review product.
+        ///     
+        /// </remarks>
         [HttpPost()]
         [Route("api/product/review/create")]
         public async Task<IActionResult> CreatrProductReview([FromBody] ProductReviewRequestModel req)
